@@ -32,5 +32,223 @@
     .hud-badge { padding: 4px 10px; border-radius: 4px; font-size: 12px; color: #fff; background: #222; }
     canvas { background: #0d1117; border: 2px solid #30363d; border-radius: 6px; cursor: crosshair; }
 
-    /* --- Menú de Niveles Personalizados --- */
-    #level-menu { display:
+    /* --- Menú de Niveles --- */
+    #level-menu { display: none; width: 850px; height: 420px; background: #161b22; border: 2px solid #30363d; border-radius: 6px; padding: 20px; color: white; flex-direction: column; }
+    .menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .level-list { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+    .level-card { background: #21262d; border: 1px solid #30363d; border-radius: 6px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+    .btn-action { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-left: 5px; }
+    .btn-play { background: #2ea44f; color: white; }
+    .btn-edit { background: #d97706; color: white; }
+    .btn-delete { background: #dc2626; color: white; }
+
+    /* --- Barra del Editor --- */
+    #editor-toolbar { display: none; width: 850px; background: #161b22; border: 1px solid #30363d; border-top: none; padding: 10px; gap: 6px; flex-wrap: wrap; align-items: center; justify-content: center; }
+    .tool-btn { background: #21262d; border: 1px solid #30363d; color: #fff; padding: 6px; border-radius: 4px; cursor: pointer; font-size: 11px; }
+    .tool-btn.selected { border-color: #00f0ff; background: #0d1117; box-shadow: 0 0 5px #00f0ff; }
+    .color-picker { width: 30px; height: 25px; padding: 0; border: none; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <div id="classroom-view">
+    <header>
+      <div class="logo-container">
+        <img src="classroom.png" alt="Classroom" onerror="this.src='https://ssl.gstatic.com/classroom/favicon.png'">
+        <h1>Ayuda de Google Classroom</h1>
+      </div>
+    </header>
+    <main class="main-container">
+      <article class="classroom-article">
+        <h2>Iniciar sesión en Classroom</h2>
+        <p>El tipo de entorno formativo determina la cuenta con la que se inicia sesión en Classroom, que puede ser una de las siguientes:</p>
+        <ul>
+          <li>Cuenta de centro educativo</li>
+          <li>Cuenta personal de Google</li>
+          <li>Cuenta de Google Workspace</li>
+        </ul>
+        <div class="note-box">
+          <p><strong>Nota:</strong> Los padres, madres y tutores no pueden acceder a la aplicación Classroom ni a las tareas de sus hijos debido a las leyes de privacidad. Solo pueden recibir comunicaciones periódicas si el profesor lo permite. Consulta más información en el artículo Información sobre las comunicaciones periódicas para padres, madres o tutores.</p>
+        </div>
+      </article>
+    </main>
+  </div>
+
+  <div id="gd-view">
+    <div id="gd-nav">
+      <button class="nav-btn active" onclick="setMode('builtin')">Nivel Oficial</button>
+      <button class="nav-btn" onclick="setMode('menu')">Mis Niveles</button>
+      <button class="nav-btn" onclick="setMode('editor')">Editor</button>
+    </div>
+
+    <div id="gd-header">
+      <div>Progreso: <span id="progress-text">0%</span></div>
+      <div>Modo: <span id="mode-text" class="hud-badge">Cubo</span></div>
+      <div>Estado: <span id="diff-text" class="hud-badge">Juego</span></div>
+    </div>
+
+    <canvas id="gameCanvas" width="850" height="420"></canvas>
+
+    <div id="level-menu">
+      <div class="menu-header">
+        <h3>Niveles Creados</h3>
+        <button class="btn-action btn-play" onclick="createNewCustomLevel()">+ Crear Nuevo Nivel</button>
+      </div>
+      <div class="level-list" id="custom-levels-list"></div>
+    </div>
+
+    <div id="editor-toolbar">
+      <button class="tool-btn selected" onclick="selectTool('block', event)">Bloque</button>
+      <button class="tool-btn" onclick="selectTool('spike', event)">Pincho</button>
+      <button class="tool-btn" onclick="selectTool('pad_yellow', event)">Pad Am</button>
+      <button class="tool-btn" onclick="selectTool('pad_pink', event)">Pad Ros</button>
+      <button class="tool-btn" onclick="selectTool('orb_yellow', event)">Orbe Am</button>
+      <button class="tool-btn" onclick="selectTool('orb_pink', event)">Orbe Ros</button>
+      <button class="tool-btn" onclick="selectTool('portal_ship', event)">Nave</button>
+      <button class="tool-btn" onclick="selectTool('portal_cube', event)">Cubo</button>
+      <button class="tool-btn" onclick="selectTool('portal_ball', event)">Bola</button>
+      <button class="tool-btn" onclick="selectTool('portal_grav_blue', event)">Grav -</button>
+      <button class="tool-btn" onclick="selectTool('portal_grav_yellow', event)">Grav +</button>
+      <button class="tool-btn" onclick="selectTool('trigger_color', event)">Trigger Color</button>
+      <input type="color" id="trigger-color-input" class="color-picker" value="#ff0000" title="Color del Trigger">
+      <button class="tool-btn" onclick="selectTool('eraser', event)" style="color:#ff6666;">Borrar</button>
+      <span style="color:#aaa; font-size:11px; margin-left:10px;">Cámara: Flechas ◄ ►</span>
+      <button class="btn-action btn-play" onclick="saveCurrentLevel()">Guardar Nivel</button>
+    </div>
+  </div>
+
+  <script>
+    // --- Protección Anti-Extensiones / DevTools ---
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || (e.ctrlKey && e.key === 'u')) {
+        e.preventDefault();
+      }
+    });
+
+    let isGameVisible = false;
+    let gameLoopStarted = false;
+    let gdState = 'builtin';
+
+    const classroomView = document.getElementById('classroom-view');
+    const gdView = document.getElementById('gd-view');
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const progressText = document.getElementById('progress-text');
+    const modeText = document.getElementById('mode-text');
+    const diffText = document.getElementById('diff-text');
+
+    const GROUND_Y = 340;
+    const CEILING_Y = 40;
+    const GRID_SIZE = 30;
+    let LEVEL_LENGTH = 14000;
+
+    let isHoldingInput = false;
+    let inputJustPressed = false;
+    let cameraX = 0;
+    let speed = 6.2;
+    let activeBgColor = "#091a10";
+
+    let selectedTool = 'block';
+    let customLevels = JSON.parse(localStorage.getItem('gd_levels') || '[]');
+    let currentEditingIndex = -1;
+
+    let objects = [];
+    let player = { x: 100, y: GROUND_Y - 28, size: 28, vy: 0, gravityDir: 1, mode: 'cube', isGrounded: false, angle: 0 };
+
+    const builtinDifficulties = [
+      { name: "1. Fácil", color: "#2ea44f", bg: "#091a10", endX: 2300 },
+      { name: "2. Normal", color: "#1f6feb", bg: "#091526", endX: 4600 },
+      { name: "3. Difícil", color: "#d97706", bg: "#241503", endX: 6900 },
+      { name: "4. Más Difícil", color: "#dc2626", bg: "#290a0a", endX: 9200 },
+      { name: "5. Insano", color: "#9333ea", bg: "#1a0829", endX: 11500 },
+      { name: "6. Demonio", color: "#ef4444", bg: "#1f0303", endX: 14000 }
+    ];
+
+    // Control global de la tecla H con e.code (físico)
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'KeyH') {
+        if (document.activeElement) document.activeElement.blur();
+        
+        isGameVisible = !isGameVisible;
+
+        if (isGameVisible) {
+          classroomView.style.display = 'none';
+          gdView.style.display = 'flex';
+          document.title = 'Geometry Dash Mini';
+          if (!gameLoopStarted) {
+            gameLoopStarted = true;
+            generateBuiltinLevel();
+            resetPlayer();
+            requestAnimationFrame(gameLoop);
+          }
+        } else {
+          gdView.style.display = 'none';
+          classroomView.style.display = 'block';
+          document.title = 'Centro de Ayuda de Google Classroom';
+        }
+        return;
+      }
+
+      if (isGameVisible) {
+        if (gdState === 'editor') {
+          if (e.key === 'ArrowRight') cameraX += 60;
+          if (e.key === 'ArrowLeft') cameraX = Math.max(0, cameraX - 60);
+        } else {
+          if (e.code === 'Space' || e.code === 'ArrowUp') {
+            if (!isHoldingInput) inputJustPressed = true;
+            isHoldingInput = true;
+          }
+        }
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      if (e.code === 'Space' || e.code === 'ArrowUp') isHoldingInput = false;
+    });
+
+    canvas.addEventListener('mousedown', () => {
+      if (isGameVisible && gdState !== 'editor') {
+        if (!isHoldingInput) inputJustPressed = true;
+        isHoldingInput = true;
+      }
+    });
+    window.addEventListener('mouseup', () => { isHoldingInput = false; });
+
+    function setMode(mode) {
+      gdState = mode;
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('level-menu').style.display = 'none';
+      document.getElementById('editor-toolbar').style.display = 'none';
+      canvas.style.display = 'block';
+
+      if (mode === 'builtin') {
+        document.querySelectorAll('.nav-btn')[0].classList.add('active');
+        generateBuiltinLevel();
+        resetPlayer();
+      } else if (mode === 'menu') {
+        document.querySelectorAll('.nav-btn')[1].classList.add('active');
+        canvas.style.display = 'none';
+        document.getElementById('level-menu').style.display = 'flex';
+        renderLevelList();
+      } else if (mode === 'editor') {
+        document.querySelectorAll('.nav-btn')[2].classList.add('active');
+        document.getElementById('editor-toolbar').style.display = 'flex';
+        if (currentEditingIndex === -1) createNewCustomLevel(false);
+      }
+    }
+
+    function selectTool(tool, ev) {
+      selectedTool = tool;
+      document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('selected'));
+      if (ev && ev.target) ev.target.classList.add('selected');
+    }
+
+    function renderLevelList() {
+      const container = document.getElementById('custom-levels-list');
+      container.innerHTML = '';
+      customLevels.forEach((lvl, idx) => {
+        const card = document.createElement('div');
+        card.className = 'level-card';
+        card.innerHTML = `
+          <span>
