@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Centro de Ayuda de Google Classroom</title>
-  <link rel="icon" type="image/png" href="classroom.png">
+  <link rel="icon" type="image/png" href="https://ssl.gstatic.com/classroom/favicon.png">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Google Sans', Roboto, Arial, sans-serif; }
-    body { background-color: #ffffff; color: #202124; overflow-x: hidden; user-select: none; }
+    body, html { width: 100%; height: 100%; overflow-x: hidden; background-color: #ffffff; color: #202124; user-select: none; }
 
-    /* --- Vista Google Classroom --- */
-    #classroom-view { display: block; min-height: 100vh; }
+    /* --- VISTA CLASSROOM --- */
+    #classroom-view { display: block; width: 100%; min-height: 100vh; }
     header { background: #fff; border-bottom: 1px solid #dadce0; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
     .logo-container { display: flex; align-items: center; gap: 12px; }
     .logo-container img { width: 32px; height: 32px; }
@@ -23,16 +23,16 @@
     .note-box { background-color: #e8f0fe; border-left: 4px solid #1a73e8; border-radius: 0 8px 8px 0; padding: 18px 20px; margin-top: 24px; }
     .note-box p { margin-bottom: 0; color: #174ea6; font-size: 15px; }
 
-    /* --- Vista Geometry Dash --- */
-    #gd-view { display: none; width: 100vw; height: 100vh; background: #07090e; flex-direction: column; align-items: center; justify-content: center; }
+    /* --- VISTA GEOMETRY DASH --- */
+    #gd-view { display: none; width: 100vw; height: 100vh; background: #07090e; flex-direction: column; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; z-index: 9999; }
     #gd-nav { display: flex; gap: 10px; margin-bottom: 10px; }
     .nav-btn { background: #21262d; border: 1px solid #30363d; color: #fff; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; }
     .nav-btn.active { background: #1f6feb; border-color: #58a6ff; }
-    #gd-header { color: #fff; font-size: 15px; margin-bottom: 10px; display: flex; gap: 20px; font-weight: bold; text-transform: uppercase; }
+    #gd-header { color: #fff; font-size: 14px; margin-bottom: 10px; display: flex; gap: 20px; font-weight: bold; text-transform: uppercase; }
     .hud-badge { padding: 4px 10px; border-radius: 4px; font-size: 12px; color: #fff; background: #222; }
     canvas { background: #0d1117; border: 2px solid #30363d; border-radius: 6px; cursor: crosshair; }
 
-    /* --- Menú de Niveles --- */
+    /* --- MENÚ DE NIVELES --- */
     #level-menu { display: none; width: 850px; height: 420px; background: #161b22; border: 2px solid #30363d; border-radius: 6px; padding: 20px; color: white; flex-direction: column; }
     .menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .level-list { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
@@ -42,9 +42,9 @@
     .btn-edit { background: #d97706; color: white; }
     .btn-delete { background: #dc2626; color: white; }
 
-    /* --- Barra del Editor --- */
+    /* --- BARRA DEL EDITOR --- */
     #editor-toolbar { display: none; width: 850px; background: #161b22; border: 1px solid #30363d; border-top: none; padding: 10px; gap: 6px; flex-wrap: wrap; align-items: center; justify-content: center; }
-    .tool-btn { background: #21262d; border: 1px solid #30363d; color: #fff; padding: 6px; border-radius: 4px; cursor: pointer; font-size: 11px; }
+    .tool-btn { background: #21262d; border: 1px solid #30363d; color: #fff; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; }
     .tool-btn.selected { border-color: #00f0ff; background: #0d1117; box-shadow: 0 0 5px #00f0ff; }
     .color-picker { width: 30px; height: 25px; padding: 0; border: none; cursor: pointer; }
   </style>
@@ -54,7 +54,7 @@
   <div id="classroom-view">
     <header>
       <div class="logo-container">
-        <img src="classroom.png" alt="Classroom" onerror="this.src='https://ssl.gstatic.com/classroom/favicon.png'">
+        <img src="https://ssl.gstatic.com/classroom/favicon.png" alt="Classroom">
         <h1>Ayuda de Google Classroom</h1>
       </div>
     </header>
@@ -68,7 +68,7 @@
           <li>Cuenta de Google Workspace</li>
         </ul>
         <div class="note-box">
-          <p><strong>Nota:</strong> Los padres, madres y tutores no pueden acceder a la aplicación Classroom ni a las tareas de sus hijos debido a las leyes de privacidad. Solo pueden recibir comunicaciones periódicas si el profesor lo permite. Consulta más información en el artículo Información sobre las comunicaciones periódicas para padres, madres o tutores.</p>
+          <p><strong>Nota:</strong> Los padres, madres y tutores no pueden acceder a la aplicación Classroom ni a las tareas de sus hijos debido a las leyes de privacidad.</p>
         </div>
       </article>
     </main>
@@ -76,15 +76,15 @@
 
   <div id="gd-view">
     <div id="gd-nav">
-      <button class="nav-btn active" onclick="setMode('builtin')">Nivel Oficial</button>
-      <button class="nav-btn" onclick="setMode('menu')">Mis Niveles</button>
-      <button class="nav-btn" onclick="setMode('editor')">Editor</button>
+      <button class="nav-btn active" id="btn-builtin" onclick="switchSubMode('builtin')">Nivel Oficial</button>
+      <button class="nav-btn" id="btn-menu" onclick="switchSubMode('menu')">Mis Niveles</button>
+      <button class="nav-btn" id="btn-editor" onclick="switchSubMode('editor')">Editor</button>
     </div>
 
     <div id="gd-header">
       <div>Progreso: <span id="progress-text">0%</span></div>
-      <div>Modo: <span id="mode-text" class="hud-badge">Cubo</span></div>
-      <div>Estado: <span id="diff-text" class="hud-badge">Juego</span></div>
+      <div>Modo: <span id="mode-text" class="hud-badge">CUBO</span></div>
+      <div>Estado: <span id="diff-text" class="hud-badge">JUEGO</span></div>
     </div>
 
     <canvas id="gameCanvas" width="850" height="420"></canvas>
@@ -92,7 +92,7 @@
     <div id="level-menu">
       <div class="menu-header">
         <h3>Niveles Creados</h3>
-        <button class="btn-action btn-play" onclick="createNewCustomLevel()">+ Crear Nuevo Nivel</button>
+        <button class="btn-action btn-play" onclick="createNewLevel()">+ Crear Nuevo Nivel</button>
       </div>
       <div class="level-list" id="custom-levels-list"></div>
     </div>
@@ -101,42 +101,30 @@
       <button class="tool-btn selected" onclick="selectTool('block', event)">Bloque</button>
       <button class="tool-btn" onclick="selectTool('spike', event)">Pincho</button>
       <button class="tool-btn" onclick="selectTool('pad_yellow', event)">Pad Am</button>
-      <button class="tool-btn" onclick="selectTool('pad_pink', event)">Pad Ros</button>
       <button class="tool-btn" onclick="selectTool('orb_yellow', event)">Orbe Am</button>
-      <button class="tool-btn" onclick="selectTool('orb_pink', event)">Orbe Ros</button>
       <button class="tool-btn" onclick="selectTool('portal_ship', event)">Nave</button>
       <button class="tool-btn" onclick="selectTool('portal_cube', event)">Cubo</button>
       <button class="tool-btn" onclick="selectTool('portal_ball', event)">Bola</button>
       <button class="tool-btn" onclick="selectTool('portal_grav_blue', event)">Grav -</button>
       <button class="tool-btn" onclick="selectTool('portal_grav_yellow', event)">Grav +</button>
       <button class="tool-btn" onclick="selectTool('trigger_color', event)">Trigger Color</button>
-      <input type="color" id="trigger-color-input" class="color-picker" value="#ff0000" title="Color del Trigger">
+      <input type="color" id="trigger-color-input" class="color-picker" value="#ff0000">
       <button class="tool-btn" onclick="selectTool('eraser', event)" style="color:#ff6666;">Borrar</button>
-      <span style="color:#aaa; font-size:11px; margin-left:10px;">Cámara: Flechas ◄ ►</span>
-      <button class="btn-action btn-play" onclick="saveCurrentLevel()">Guardar Nivel</button>
+      <span style="color:#aaa; font-size:11px; margin-left:10px;">Mover: Flechas ◄ ►</span>
+      <button class="btn-action btn-play" onclick="saveLevel()">Guardar</button>
     </div>
   </div>
 
   <script>
-    // --- Protección Anti-Extensiones / DevTools ---
-    document.addEventListener('contextmenu', e => e.preventDefault());
-    document.addEventListener('keydown', e => {
-      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || (e.ctrlKey && e.key === 'u')) {
-        e.preventDefault();
-      }
-    });
-
-    let isGameVisible = false;
-    let gameLoopStarted = false;
-    let gdState = 'builtin';
+    // --- ESTADO GLOBAL ---
+    let gameActive = false;
+    let animFrameId = null;
+    let subMode = 'builtin'; // 'builtin', 'menu', 'editor', 'playing_custom'
 
     const classroomView = document.getElementById('classroom-view');
     const gdView = document.getElementById('gd-view');
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-    const progressText = document.getElementById('progress-text');
-    const modeText = document.getElementById('mode-text');
-    const diffText = document.getElementById('diff-text');
 
     const GROUND_Y = 340;
     const CEILING_Y = 40;
@@ -148,9 +136,9 @@
     let cameraX = 0;
     let speed = 6.2;
     let activeBgColor = "#091a10";
-
     let selectedTool = 'block';
-    let customLevels = JSON.parse(localStorage.getItem('gd_levels') || '[]');
+
+    let customLevels = JSON.parse(localStorage.getItem('gd_levels_v2') || '[]');
     let currentEditingIndex = -1;
 
     let objects = [];
@@ -165,40 +153,47 @@
       { name: "6. Demonio", color: "#ef4444", bg: "#1f0303", endX: 14000 }
     ];
 
-    // Control global de la tecla H con e.code (físico)
+    // --- CONTROLADOR DE LA TECLA H (Prioridad máxima con Capture) ---
     window.addEventListener('keydown', (e) => {
       if (e.code === 'KeyH') {
-        if (document.activeElement) document.activeElement.blur();
+        e.preventDefault();
+        e.stopPropagation();
         
-        isGameVisible = !isGameVisible;
+        // Desenfocar cualquier input activo para evitar bloqueos
+        if (document.activeElement) document.activeElement.blur();
 
-        if (isGameVisible) {
-          classroomView.style.display = 'none';
-          gdView.style.display = 'flex';
-          document.title = 'Geometry Dash Mini';
-          if (!gameLoopStarted) {
-            gameLoopStarted = true;
-            generateBuiltinLevel();
-            resetPlayer();
-            requestAnimationFrame(gameLoop);
-          }
-        } else {
-          gdView.style.display = 'none';
-          classroomView.style.display = 'block';
-          document.title = 'Centro de Ayuda de Google Classroom';
-        }
-        return;
+        toggleGameMode();
       }
+    }, true);
 
-      if (isGameVisible) {
-        if (gdState === 'editor') {
-          if (e.key === 'ArrowRight') cameraX += 60;
-          if (e.key === 'ArrowLeft') cameraX = Math.max(0, cameraX - 60);
-        } else {
-          if (e.code === 'Space' || e.code === 'ArrowUp') {
-            if (!isHoldingInput) inputJustPressed = true;
-            isHoldingInput = true;
-          }
+    function toggleGameMode() {
+      gameActive = !gameActive;
+
+      if (gameActive) {
+        classroomView.style.display = 'none';
+        gdView.style.display = 'flex';
+        document.title = 'Geometry Dash Mini';
+        switchSubMode('builtin');
+        startLoop();
+      } else {
+        gdView.style.display = 'none';
+        classroomView.style.display = 'block';
+        document.title = 'Centro de Ayuda de Google Classroom';
+        stopLoop();
+      }
+    }
+
+    // --- CONTROLES DE JUEGO ---
+    window.addEventListener('keydown', (e) => {
+      if (!gameActive || e.code === 'KeyH') return;
+
+      if (subMode === 'editor') {
+        if (e.key === 'ArrowRight') cameraX += 60;
+        if (e.key === 'ArrowLeft') cameraX = Math.max(0, cameraX - 60);
+      } else {
+        if (e.code === 'Space' || e.code === 'ArrowUp') {
+          if (!isHoldingInput) inputJustPressed = true;
+          isHoldingInput = true;
         }
       }
     });
@@ -208,33 +203,34 @@
     });
 
     canvas.addEventListener('mousedown', () => {
-      if (isGameVisible && gdState !== 'editor') {
+      if (gameActive && subMode !== 'editor') {
         if (!isHoldingInput) inputJustPressed = true;
         isHoldingInput = true;
       }
     });
     window.addEventListener('mouseup', () => { isHoldingInput = false; });
 
-    function setMode(mode) {
-      gdState = mode;
+    // --- NAVEGACIÓN Y MODOS ---
+    function switchSubMode(mode) {
+      subMode = mode;
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
       document.getElementById('level-menu').style.display = 'none';
       document.getElementById('editor-toolbar').style.display = 'none';
       canvas.style.display = 'block';
 
       if (mode === 'builtin') {
-        document.querySelectorAll('.nav-btn')[0].classList.add('active');
+        document.getElementById('btn-builtin').classList.add('active');
         generateBuiltinLevel();
         resetPlayer();
       } else if (mode === 'menu') {
-        document.querySelectorAll('.nav-btn')[1].classList.add('active');
+        document.getElementById('btn-menu').classList.add('active');
         canvas.style.display = 'none';
         document.getElementById('level-menu').style.display = 'flex';
         renderLevelList();
       } else if (mode === 'editor') {
-        document.querySelectorAll('.nav-btn')[2].classList.add('active');
+        document.getElementById('btn-editor').classList.add('active');
         document.getElementById('editor-toolbar').style.display = 'flex';
-        if (currentEditingIndex === -1) createNewCustomLevel(false);
+        if (currentEditingIndex === -1) createNewLevel(false);
       }
     }
 
@@ -244,6 +240,7 @@
       if (ev && ev.target) ev.target.classList.add('selected');
     }
 
+    // --- GESTIÓN DE NIVELES ---
     function renderLevelList() {
       const container = document.getElementById('custom-levels-list');
       container.innerHTML = '';
@@ -251,4 +248,90 @@
         const card = document.createElement('div');
         card.className = 'level-card';
         card.innerHTML = `
-          <span>
+          <span><strong>${lvl.name}</strong> (${lvl.objects.length} objetos)</span>
+          <div>
+            <button class="btn-action btn-play" onclick="playCustomLevel(${idx})">Jugar</button>
+            <button class="btn-action btn-edit" onclick="editCustomLevel(${idx})">Editar</button>
+            <button class="btn-action btn-delete" onclick="deleteCustomLevel(${idx})">Borrar</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function createNewLevel(switchToEditor = true) {
+      const name = "Nivel " + (customLevels.length + 1);
+      const newLvl = { name: name, objects: [] };
+      customLevels.push(newLvl);
+      currentEditingIndex = customLevels.length - 1;
+      saveToStorage();
+      if (switchToEditor) switchSubMode('editor');
+      else objects = newLvl.objects;
+    }
+
+    function saveLevel() {
+      if (currentEditingIndex !== -1) {
+        customLevels[currentEditingIndex].objects = objects;
+        saveToStorage();
+        alert("Nivel guardado.");
+      }
+    }
+
+    function saveToStorage() {
+      localStorage.setItem('gd_levels_v2', JSON.stringify(customLevels));
+    }
+
+    function editCustomLevel(idx) {
+      currentEditingIndex = idx;
+      objects = customLevels[idx].objects;
+      switchSubMode('editor');
+    }
+
+    function playCustomLevel(idx) {
+      objects = customLevels[idx].objects;
+      LEVEL_LENGTH = Math.max(3000, ...objects.map(o => o.x + 500));
+      subMode = 'playing_custom';
+      document.getElementById('level-menu').style.display = 'none';
+      canvas.style.display = 'block';
+      resetPlayer();
+    }
+
+    function deleteCustomLevel(idx) {
+      customLevels.splice(idx, 1);
+      saveToStorage();
+      renderLevelList();
+    }
+
+    // --- EDITOR CLICK ---
+    canvas.addEventListener('click', (e) => {
+      if (subMode !== 'editor') return;
+      const rect = canvas.getBoundingClientRect();
+      const clickX = e.clientX - rect.left + cameraX;
+      const clickY = e.clientY - rect.top;
+
+      const gridX = Math.floor(clickX / GRID_SIZE) * GRID_SIZE;
+      const gridY = Math.floor(clickY / GRID_SIZE) * GRID_SIZE;
+
+      if (selectedTool === 'eraser') {
+        objects = objects.filter(o => !(Math.abs(o.x - gridX) < 15 && Math.abs(o.y - gridY) < 15));
+      } else {
+        const colorVal = document.getElementById('trigger-color-input').value;
+        let newObj = { type: selectedTool, x: gridX, y: gridY, w: 30, h: 30, r: 14 };
+        if (selectedTool === 'trigger_color') newObj.color = colorVal;
+        objects.push(newObj);
+      }
+    });
+
+    function generateBuiltinLevel() {
+      objects = [
+        { type: 'spike', x: 600, y: GROUND_Y - 30, w: 30, h: 30 },
+        { type: 'pad_yellow', x: 900, y: GROUND_Y - 8, w: 32, h: 8 },
+        { type: 'block', x: 1100, y: GROUND_Y - 60, w: 90, h: 60 },
+        { type: 'orb_yellow', x: 1400, y: GROUND_Y - 80, r: 14 },
+        { type: 'portal_ship', x: 2100, y: GROUND_Y - 140, w: 30, h: 90 },
+        { type: 'block', x: 2600, y: GROUND_Y - 120, w: 200, h: 30 },
+        { type: 'portal_ball', x: 4400, y: GROUND_Y - 140, w: 30, h: 90 },
+        { type: 'portal_cube', x: 6600, y: GROUND_Y - 140, w: 30, h: 90 },
+        { type: 'trigger_color', x: 7000, y: GROUND_Y - 100, w: 30, h: 30, color: '#4a0e4e' },
+        { type: 'portal_grav_blue', x: 7400, y: GROUND_Y - 140, w: 30, h: 90 },
+        { type: 'portal_grav_yellow', x: 8200, y
