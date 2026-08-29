@@ -1,1 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Classroom</title>
+  
+  <link rel="icon" type="image/png" href="clasroom.png">
 
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+    }
+    iframe {
+      width: 100%;
+      height: 100vh;
+      border: none;
+      display: block;
+    }
+    .inicio {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #5f6368;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="pantalla">
+    <div class="inicio">
+      <h2>Presiona la tecla "H" para continuar</h2>
+    </div>
+  </div>
+
+  <script>
+    // Variable half.time inicializada en true por defecto
+    const half = {
+      time: true
+    };
+
+    // Estado para controlar en qué pantalla estamos ('inicio', 'classroom', 'gd')
+    let modoActual = 'inicio';
+
+    // Listener para detectar cuando se pulsa la tecla 'h' o 'H'
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'h' || event.key === 'H') {
+        const pantalla = document.getElementById('pantalla');
+
+        if (modoActual !== 'classroom') {
+          // Primera pulsación: Abrir la ayuda de Google Classroom
+          modoActual = 'classroom';
+          pantalla.innerHTML = '<iframe src="https://support.google.com/edu/classroom" title="Google Classroom"></iframe>';
+          document.title = "Ayuda de Google Classroom";
+        } 
+        else if (half.time === true) {
+          // Segunda pulsación: Si half.time está en true, cambiar al juego gd.html
+          modoActual = 'gd';
+          pantalla.innerHTML = '<iframe src="gd.html" title="Geometry Dash"></iframe>';
+          document.title = "Classes";
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
