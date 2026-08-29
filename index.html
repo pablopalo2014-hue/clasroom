@@ -3,76 +3,293 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Classroom</title>
-  
-  <link rel="icon" type="image/png" href="clasroom.png">
-
+  <title>Centro de Ayuda de Google Classroom</title>
+  <link rel="icon" type="image/png" href="classroom.png">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      font-family: Arial, sans-serif;
-      background-color: #ffffff;
-    }
-    iframe {
-      width: 100%;
-      height: 100vh;
-      border: none;
-      display: block;
-    }
-    .inicio {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      color: #5f6368;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', Arial, sans-serif; }
+    body { background-color: #f8f9fa; color: #202124; overflow-x: hidden; }
+
+    /* --- Vista Google Classroom --- */
+    #classroom-view { display: block; min-height: 100vh; }
+    header { background: #fff; border-bottom: 1px solid #dadce0; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; }
+    .logo-container { display: flex; align-items: center; gap: 12px; }
+    .logo-container img { width: 32px; height: 32px; }
+    .logo-container h1 { font-size: 20px; color: #5f6368; font-weight: 400; }
+    .hero { background: #1a73e8; color: white; padding: 60px 20px; text-align: center; }
+    .hero h2 { font-size: 32px; margin-bottom: 20px; font-weight: 400; }
+    .search-box { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; padding: 12px 20px; display: flex; align-items: center; }
+    .search-box input { border: none; outline: none; width: 100%; font-size: 16px; margin-left: 10px; }
+    .content-grid { max-width: 1000px; margin: 40px auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; padding: 0 20px; }
+    .card { background: white; border: 1px solid #dadce0; border-radius: 8px; padding: 24px; transition: box-shadow 0.2s; }
+    .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .card h3 { color: #1a73e8; margin-bottom: 10px; font-size: 18px; }
+    .card p { color: #5f6368; font-size: 14px; line-height: 1.5; }
+
+    /* --- Vista Geometry Dash --- */
+    #gd-view { display: none; width: 100vw; height: 100vh; background: #0b0e14; flex-direction: column; align-items: center; justify-content: center; }
+    #gd-header { color: #fff; font-size: 18px; margin-bottom: 12px; display: flex; gap: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+    .diff-badge { padding: 4px 12px; border-radius: 4px; font-size: 14px; color: #fff; }
+    canvas { background: #111; border: 3px solid #333; border-radius: 6px; box-shadow: 0 0 20px rgba(0,255,200,0.2); }
   </style>
 </head>
 <body>
 
-  <div id="pantalla">
-    <div class="inicio">
-      <h2>Presiona la tecla "H" para continuar</h2>
+  <!-- Vista 1: Ayuda de Google Classroom -->
+  <div id="classroom-view">
+    <header>
+      <div class="logo-container">
+        <img src="classroom.png" alt="Classroom" onerror="this.src='https://ssl.gstatic.com/classroom/favicon.png'">
+        <h1>Ayuda de Google Classroom</h1>
+      </div>
+    </header>
+    <div class="hero">
+      <h2>¿Cómo podemos ayudarte?</h2>
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" placeholder="Describe tu problema o pregunta...">
+      </div>
+    </div>
+    <div class="content-grid">
+      <div class="card">
+        <h3>Iniciar sesión en Classroom</h3>
+        <p>Aprende a acceder a tus clases desde diferentes dispositivos y cuentas educativas.</p>
+      </div>
+      <div class="card">
+        <h3>Entregar tareas y trabajos</h3>
+        <p>Pasos para adjuntar archivos, responder cuestionarios y completar asignaciones.</p>
+      </div>
+      <div class="card">
+        <h3>Unirse a una clase</h3>
+        <p>Cómo utilizar códigos de acceso o invitaciones por correo de tu profesor.</p>
+      </div>
+      <div class="card">
+        <h3>Notificaciones y calendario</h3>
+        <p>Configura recordatorios de entregas y sincroniza tu calendario escolar.</p>
+      </div>
     </div>
   </div>
 
+  <!-- Vista 2: Geometry Dash Mini -->
+  <div id="gd-view">
+    <div id="gd-header">
+      <div>Progreso: <span id="progress-text">0%</span></div>
+      <div>Dificultad: <span id="diff-text" class="diff-badge">Fácil</span></div>
+    </div>
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+  </div>
+
   <script>
-    // Variable half.time inicializada en true por defecto
-    const half = {
-      time: true
-    };
+    // Configuración y variable global
+    let halfTime = true;
+    let isGameRunning = false;
 
-    // Estado para controlar en qué pantalla estamos ('inicio', 'classroom', 'gd')
-    let modoActual = 'inicio';
+    const classroomView = document.getElementById('classroom-view');
+    const gdView = document.getElementById('gd-view');
 
-    // Listener para detectar cuando se pulsa la tecla 'h' o 'H'
-    document.addEventListener('keydown', function(event) {
-      if (event.key === 'h' || event.key === 'H') {
-        const pantalla = document.getElementById('pantalla');
-
-        if (modoActual !== 'classroom') {
-          // Primera pulsación: Abrir la ayuda de Google Classroom
-          modoActual = 'classroom';
-          pantalla.innerHTML = '<iframe src="https://support.google.com/edu/classroom" title="Google Classroom"></iframe>';
-          document.title = "Ayuda de Google Classroom";
-        } 
-        else if (half.time === true) {
-          // Segunda pulsación: Si half.time está en true, cambiar al juego gd.html
-          modoActual = 'gd';
-          pantalla.innerHTML = '<iframe src="gd.html" title="Geometry Dash"></iframe>';
-          document.title = "Classes";
+    // Alternar vistas al presionar tecla 'H' o 'h'
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'h' || e.key === 'H') {
+        if (halfTime) {
+          classroomView.style.display = 'none';
+          gdView.style.display = 'flex';
+          document.title = 'Geometry Dash Mini';
+          if (!isGameRunning) {
+            initGame();
+          }
+        } else {
+          gdView.style.display = 'none';
+          classroomView.style.display = 'block';
+          document.title = 'Centro de Ayuda de Google Classroom';
         }
+        halfTime = !halfTime;
       }
     });
-  </script>
 
+    // --- Motor Geometry Dash ---
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const progressText = document.getElementById('progress-text');
+    const diffText = document.getElementById('diff-text');
+
+    const LEVEL_LENGTH = 12000;
+    let player = { x: 100, y: 320, size: 30, vy: 0, gravity: 0.85, jump: -12, isGrounded: false, angle: 0 };
+    let cameraX = 0;
+    let speed = 6.5;
+    let obstacles = [];
+
+    // 6 Niveles de Dificultad Progresivos
+    const difficulties = [
+      { name: "1. Fácil", color: "#2ea44f", bg: "#0d2b1a", endX: 2000 },
+      { name: "2. Normal", color: "#1f6feb", bg: "#0c213d", endX: 4000 },
+      { name: "3. Difícil", color: "#d97706", bg: "#3b2303", endX: 6000 },
+      { name: "4. Más Difícil", color: "#dc2626", bg: "#3b0c0c", endX: 8000 },
+      { name: "5. Insano", color: "#9333ea", bg: "#280c3b", endX: 10000 },
+      { name: "6. Demonio", color: "#ef4444", bg: "#1f0000", endX: LEVEL_LENGTH }
+    ];
+
+    function generateObstacles() {
+      obstacles = [];
+      for (let x = 600; x < LEVEL_LENGTH; x += 280) {
+        let diffIndex = difficulties.findIndex(d => x < d.endX);
+        if (diffIndex === -1) diffIndex = 5;
+
+        if (diffIndex === 0) {
+          obstacles.push({ type: 'spike', x: x, y: 320, w: 30, h: 30 });
+        } else if (diffIndex === 1) {
+          obstacles.push({ type: 'spike', x: x, y: 320, w: 30, h: 30 });
+          obstacles.push({ type: 'spike', x: x + 30, y: 320, w: 30, h: 30 });
+        } else if (diffIndex === 2) {
+          obstacles.push({ type: 'block', x: x, y: 270, w: 60, h: 80 });
+          obstacles.push({ type: 'spike', x: x + 15, y: 240, w: 30, h: 30 });
+        } else if (diffIndex === 3) {
+          obstacles.push({ type: 'spike', x: x, y: 320, w: 30, h: 30 });
+          obstacles.push({ type: 'spike', x: x + 30, y: 320, w: 30, h: 30 });
+          obstacles.push({ type: 'block', x: x + 140, y: 280, w: 50, h: 70 });
+        } else if (diffIndex === 4) {
+          obstacles.push({ type: 'spike', x: x, y: 320, w: 30, h: 30 });
+          obstacles.push({ type: 'spike', x: x + 30, y: 320, w: 30, h: 30 });
+          obstacles.push({ type: 'spike', x: x + 60, y: 320, w: 30, h: 30 });
+        } else {
+          obstacles.push({ type: 'block', x: x, y: 260, w: 70, h: 90 });
+          obstacles.push({ type: 'spike', x: x, y: 230, w: 30, h: 30 });
+          obstacles.push({ type: 'spike', x: x + 120, y: 320, w: 30, h: 30 });
+          obstacles.push({ type: 'spike', x: x + 150, y: 320, w: 30, h: 30 });
+        }
+      }
+    }
+
+    function jump() {
+      if (player.isGrounded) {
+        player.vy = player.jump;
+        player.isGrounded = false;
+      }
+    }
+
+    // Salto con barra espaciadora, flecha arriba o clic
+    window.addEventListener('keydown', (e) => {
+      if ((e.code === 'Space' || e.code === 'ArrowUp') && !halfTime) {
+        jump();
+      }
+    });
+    canvas.addEventListener('mousedown', () => { if (!halfTime) jump(); });
+
+    function getCurrentDifficulty(x) {
+      return difficulties.find(d => x < d.endX) || difficulties[5];
+    }
+
+    function resetPlayer() {
+      player.x = 100;
+      player.y = 320;
+      player.vy = 0;
+      player.angle = 0;
+      cameraX = 0;
+    }
+
+    function initGame() {
+      isGameRunning = true;
+      generateObstacles();
+      resetPlayer();
+      gameLoop();
+    }
+
+    function gameLoop() {
+      if (halfTime) {
+        requestAnimationFrame(gameLoop);
+        return;
+      }
+
+      player.x += speed;
+      player.vy += player.gravity;
+      player.y += player.vy;
+
+      // Colisión con el suelo
+      if (player.y >= 320) {
+        player.y = 320;
+        player.vy = 0;
+        player.isGrounded = true;
+        player.angle = Math.round(player.angle / (Math.PI / 2)) * (Math.PI / 2);
+      } else {
+        player.angle += 0.15;
+      }
+
+      cameraX = player.x - 100;
+
+      let currentDiff = getCurrentDifficulty(player.x);
+      let progressPercent = Math.min(100, Math.floor((player.x / LEVEL_LENGTH) * 100));
+
+      progressText.innerText = `${progressPercent}%`;
+      diffText.innerText = currentDiff.name;
+      diffText.style.backgroundColor = currentDiff.color;
+
+      // Comprobación de colisiones
+      let playerRect = { x: player.x, y: player.y, w: player.size, h: player.size };
+      for (let obs of obstacles) {
+        if (obs.x > cameraX - 50 && obs.x < cameraX + 850) {
+          if (
+            playerRect.x < obs.x + obs.w &&
+            playerRect.x + playerRect.w > obs.x &&
+            playerRect.y < obs.y + obs.h &&
+            playerRect.y + playerRect.h > obs.y
+          ) {
+            resetPlayer();
+            break;
+          }
+        }
+      }
+
+      // Dibujar Escena
+      ctx.fillStyle = currentDiff.bg;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Suelo
+      ctx.fillStyle = "#1e1e1e";
+      ctx.fillRect(0, 350, canvas.width, 50);
+      ctx.strokeStyle = "#444";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, 350);
+      ctx.lineTo(canvas.width, 350);
+      ctx.stroke();
+
+      // Obstáculos
+      for (let obs of obstacles) {
+        let drawX = obs.x - cameraX;
+        if (drawX > -50 && drawX < 850) {
+          if (obs.type === 'spike') {
+            ctx.fillStyle = "#ff3333";
+            ctx.beginPath();
+            ctx.moveTo(drawX, obs.y + obs.h);
+            ctx.lineTo(drawX + obs.w / 2, obs.y);
+            ctx.lineTo(drawX + obs.w, obs.y + obs.h);
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = "#ffffff";
+            ctx.stroke();
+          } else if (obs.type === 'block') {
+            ctx.fillStyle = "#333";
+            ctx.fillRect(drawX, obs.y, obs.w, obs.h);
+            ctx.strokeStyle = "#777";
+            ctx.strokeRect(drawX, obs.y, obs.w, obs.h);
+          }
+        }
+      }
+
+      // Jugador (Cubo)
+      ctx.save();
+      ctx.translate(player.x - cameraX + player.size / 2, player.y + player.size / 2);
+      ctx.rotate(player.angle);
+      ctx.fillStyle = "#00ffcc";
+      ctx.fillRect(-player.size / 2, -player.size / 2, player.size, player.size);
+      ctx.strokeStyle = "#005544";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(-player.size / 2, -player.size / 2, player.size, player.size);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(-6, -7, 5, 5);
+      ctx.fillRect(1, -7, 5, 5);
+      ctx.restore();
+
+      requestAnimationFrame(gameLoop);
+    }
+  </script>
 </body>
 </html>
