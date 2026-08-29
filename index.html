@@ -87,6 +87,7 @@
           classroomView.style.display = 'block';
           document.title = 'Centro de Ayuda de Google Classroom';
         }
+        halfTime = !halfTime; // Se cambia el estado de halfTime al pulsar H
       }
     });
 
@@ -134,20 +135,20 @@
       objects.push({ type: 'spike', x: 1400, y: GROUND_Y - 30, w: 30, h: 30 });
       objects.push({ type: 'portal_ship', x: 2100, y: GROUND_Y - 140, w: 30, h: 90 });
 
-      // 2. Normal (Nave - Vuelo suave)
+      // 2. Normal (Nave)
       objects.push({ type: 'block', x: 2600, y: GROUND_Y - 120, w: 200, h: 30 });
       objects.push({ type: 'block', x: 3100, y: 40, w: 200, h: 100 });
       objects.push({ type: 'spike', x: 3400, y: GROUND_Y - 30, w: 30, h: 30 });
       objects.push({ type: 'portal_ball', x: 4400, y: GROUND_Y - 140, w: 30, h: 90 });
 
-      // 3. Difícil (Bola - Cambio de gravedad)
+      // 3. Difícil (Bola)
       objects.push({ type: 'block', x: 4800, y: GROUND_Y - 50, w: 120, h: 50 });
       objects.push({ type: 'spike', x: 5100, y: GROUND_Y - 30, w: 30, h: 30 });
       objects.push({ type: 'block', x: 5400, y: CEILING_Y, w: 150, h: 60 });
       objects.push({ type: 'orb_pink', x: 5800, y: GROUND_Y - 70, r: 14 });
       objects.push({ type: 'portal_cube', x: 6600, y: GROUND_Y - 140, w: 30, h: 90 });
 
-      // 4. Más Difícil (Cubo Avanzado + Portales de Gravedad)
+      // 4. Más Difícil (Cubo + Gravedad)
       objects.push({ type: 'pad_pink', x: 7100, y: GROUND_Y - 8, w: 32, h: 8 });
       objects.push({ type: 'portal_grav_blue', x: 7400, y: GROUND_Y - 140, w: 30, h: 90 });
       objects.push({ type: 'block', x: 7700, y: CEILING_Y, w: 120, h: 80 });
@@ -156,13 +157,13 @@
       objects.push({ type: 'spike', x: 8600, y: GROUND_Y - 30, w: 30, h: 30 });
       objects.push({ type: 'portal_ship', x: 9000, y: GROUND_Y - 140, w: 30, h: 90 });
 
-      // 5. Insano (Nave Estrecha)
+      // 5. Insano
       objects.push({ type: 'block', x: 9400, y: GROUND_Y - 60, w: 300, h: 60 });
       objects.push({ type: 'block', x: 9400, y: CEILING_Y, w: 300, h: 140 });
       objects.push({ type: 'block', x: 10100, y: GROUND_Y - 180, w: 250, h: 180 });
       objects.push({ type: 'portal_cube', x: 11200, y: GROUND_Y - 140, w: 30, h: 90 });
 
-      // 6. Demonio (Sincronización de Orbes y Bloques)
+      // 6. Demonio
       objects.push({ type: 'spike', x: 11700, y: GROUND_Y - 30, w: 30, h: 30 });
       objects.push({ type: 'orb_yellow', x: 11900, y: GROUND_Y - 70, r: 14 });
       objects.push({ type: 'block', x: 12100, y: GROUND_Y - 70, w: 60, h: 70 });
@@ -171,7 +172,7 @@
       objects.push({ type: 'pad_yellow', x: 13100, y: GROUND_Y - 8, w: 32, h: 8 });
     }
 
-    // Input listeners
+    // Controles
     window.addEventListener('keydown', (e) => {
       if ((e.code === 'Space' || e.code === 'ArrowUp') && !halfTime) {
         if (!isHoldingInput) inputJustPressed = true;
@@ -212,7 +213,7 @@
         return;
       }
 
-      // --- 1. Físicas según Modo ---
+      // Físicas
       player.x += speed;
 
       if (player.mode === 'cube') {
@@ -236,7 +237,7 @@
 
       player.y += player.vy;
 
-      // --- 2. Límites Suelo / Techo ---
+      // Suelo / Techo
       player.isGrounded = false;
       if (player.gravityDir === 1 && player.y >= GROUND_Y - player.size) {
         player.y = GROUND_Y - player.size;
@@ -260,31 +261,27 @@
 
       cameraX = player.x - 120;
 
-      // --- 3. Interacciones y Colisiones (Hitboxes Ajustadas) ---
+      // Colisiones
       let pHitbox = { x: player.x + 4, y: player.y + 4, w: player.size - 8, h: player.size - 8 };
 
       for (let obj of objects) {
         if (obj.x > cameraX - 100 && obj.x < cameraX + 900) {
 
-          // Bloques sólidos
           if (obj.type === 'block') {
             let bBox = { x: obj.x, y: obj.y, w: obj.w, h: obj.h };
             if (pHitbox.x < bBox.x + bBox.w && pHitbox.x + pHitbox.w > bBox.x &&
                 pHitbox.y < bBox.y + bBox.h && pHitbox.y + pHitbox.h > bBox.y) {
-              
-              // Aterrizaje superior/inferior
               if (player.vy * player.gravityDir >= 0 && Math.abs((player.y + (player.gravityDir === 1 ? player.size : 0)) - (player.gravityDir === 1 ? obj.y : obj.y + obj.h)) < 16) {
                 player.y = player.gravityDir === 1 ? obj.y - player.size : obj.y + obj.h;
                 player.vy = 0;
                 player.isGrounded = true;
               } else {
-                resetPlayer(); // Colisión frontal
+                resetPlayer();
                 break;
               }
             }
           }
 
-          // Pinchos (Hitbox justa e indulgente)
           else if (obj.type === 'spike') {
             let sHitbox = { x: obj.x + 7, y: obj.y + 8, w: obj.w - 14, h: obj.h - 10 };
             if (pHitbox.x < sHitbox.x + sHitbox.w && pHitbox.x + pHitbox.w > sHitbox.x &&
@@ -294,7 +291,6 @@
             }
           }
 
-          // Orbes (Activación al presionar dentro del área)
           else if (obj.type.startsWith('orb')) {
             let dist = Math.hypot((player.x + player.size/2) - obj.x, (player.y + player.size/2) - obj.y);
             if (dist < obj.r + 15 && inputJustPressed) {
@@ -304,7 +300,6 @@
             }
           }
 
-          // Pads (Impulso automático al tocar)
           else if (obj.type.startsWith('pad')) {
             if (pHitbox.x < obj.x + obj.w && pHitbox.x + pHitbox.w > obj.x &&
                 pHitbox.y + pHitbox.h >= obj.y) {
@@ -313,7 +308,6 @@
             }
           }
 
-          // Portales
           else if (obj.type.startsWith('portal')) {
             if (Math.abs(player.x - obj.x) < 20) {
               if (obj.type === 'portal_ship') player.mode = 'ship';
@@ -326,9 +320,9 @@
         }
       }
 
-      inputJustPressed = false; // Reset instantáneo del pulso
+      inputJustPressed = false;
 
-      // --- 4. Renderizado ---
+      // Renderizado
       let currentDiff = difficulties.find(d => player.x < d.endX) || difficulties[5];
       let progress = Math.min(100, Math.floor((player.x / LEVEL_LENGTH) * 100));
 
@@ -340,7 +334,6 @@
       ctx.fillStyle = currentDiff.bg;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Suelo y Techo
       ctx.fillStyle = "#161b22";
       ctx.fillRect(0, GROUND_Y, canvas.width, canvas.height - GROUND_Y);
       ctx.fillRect(0, 0, canvas.width, CEILING_Y);
@@ -351,7 +344,6 @@
       ctx.moveTo(0, CEILING_Y); ctx.lineTo(canvas.width, CEILING_Y);
       ctx.stroke();
 
-      // Render de Objetos
       for (let obj of objects) {
         let dx = obj.x - cameraX;
         if (dx > -60 && dx < 900) {
@@ -385,7 +377,6 @@
         }
       }
 
-      // Render del Jugador
       ctx.save();
       ctx.translate(player.x - cameraX + player.size / 2, player.y + player.size / 2);
       ctx.rotate(player.angle);
