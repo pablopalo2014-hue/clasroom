@@ -696,4 +696,702 @@
     }
   </script>
 </body>
+</html><!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Centro de Ayuda de Google Classroom</title>
+  <link rel="icon" type="image/png" href="https://ssl.gstatic.com/classroom/favicon.png">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    /* --- Vista Google Classroom con tipografía cuadrada --- */
+    body, html { width: 100%; height: 100%; overflow-x: hidden; background-color: #ffffff; color: #202124; user-select: none; }
+    .square-font, .square-font * { font-family: 'Consolas', 'Courier New', 'Roboto Mono', monospace !important; }
+
+    #classroom-view { display: block; width: 100%; min-height: 100vh; }
+    header { background: #fff; border-bottom: 1px solid #dadce0; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+    .logo-container { display: flex; align-items: center; gap: 12px; }
+    .logo-container img { width: 32px; height: 32px; }
+    .logo-container h1 { font-size: 20px; color: #5f6368; font-weight: 600; }
+    .main-container { max-width: 850px; margin: 30px auto; padding: 0 24px; }
+    
+    .classroom-article h2 { font-size: 26px; color: #1a73e8; font-weight: 700; margin: 24px 0 16px 0; line-height: 1.2; }
+    .classroom-article h3 { font-size: 20px; color: #202124; font-weight: 700; margin: 20px 0 12px 0; }
+    .classroom-article p { font-size: 15px; line-height: 1.6; color: #3c4043; margin-bottom: 16px; }
+    .classroom-article ul, .classroom-article ol { margin: 0 0 20px 28px; }
+    .classroom-article li { font-size: 15px; line-height: 1.8; color: #3c4043; }
+    
+    .note-box { background-color: #e8f0fe; border-left: 4px solid #1a73e8; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0; }
+    .note-box p { margin-bottom: 0; color: #174ea6; font-size: 14px; }
+
+    /* --- Vista Geometry Dash --- */
+    #gd-view { display: none; width: 100vw; height: 100vh; background: #07090e; flex-direction: column; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; z-index: 9999; font-family: sans-serif; }
+    #gd-nav { display: flex; gap: 10px; margin-bottom: 10px; }
+    .nav-btn { background: #21262d; border: 1px solid #30363d; color: #fff; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    .nav-btn.active { background: #1f6feb; border-color: #58a6ff; }
+    #gd-header { color: #fff; font-size: 13px; margin-bottom: 8px; display: flex; gap: 16px; font-weight: bold; text-transform: uppercase; }
+    .hud-badge { padding: 4px 10px; border-radius: 4px; font-size: 11px; color: #fff; background: #222; }
+    canvas { background: #0d1117; border: 2px solid #30363d; border-radius: 6px; cursor: crosshair; }
+
+    /* --- Menú de Niveles --- */
+    #level-menu { display: none; width: 850px; height: 420px; background: #161b22; border: 2px solid #30363d; border-radius: 6px; padding: 20px; color: white; flex-direction: column; }
+    .menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .level-list { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+    .level-card { background: #21262d; border: 1px solid #30363d; border-radius: 6px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+    .btn-action { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-left: 5px; }
+    .btn-play { background: #2ea44f; color: white; }
+    .btn-edit { background: #d97706; color: white; }
+    .btn-delete { background: #dc2626; color: white; }
+
+    /* --- Editor Toolbar --- */
+    #editor-toolbar { display: none; width: 850px; background: #161b22; border: 1px solid #30363d; border-top: none; padding: 8px; gap: 5px; flex-wrap: wrap; align-items: center; justify-content: center; }
+    .tool-btn { background: #21262d; border: 1px solid #30363d; color: #fff; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; }
+    .tool-btn.selected { border-color: #00f0ff; background: #0d1117; box-shadow: 0 0 5px #00f0ff; }
+    .cam-btn { background: #1f6feb; border-color: #58a6ff; font-weight: bold; }
+    .color-picker { width: 28px; height: 24px; padding: 0; border: none; cursor: pointer; }
+  </style>
+</head>
+<body class="square-font">
+
+  <!-- Vista Classroom -->
+  <div id="classroom-view">
+    <header>
+      <div class="logo-container">
+        <img src="https://ssl.gstatic.com/classroom/favicon.png" alt="Classroom Icon">
+        <h1>Ayuda de Google Classroom</h1>
+      </div>
+    </header>
+    <main class="main-container">
+      <article class="classroom-article">
+        <h2>Iniciar sesión en Classroom</h2>
+        <p>El tipo de entorno formativo determina la cuenta con la que se inicia sesión en Classroom, que puede ser una de las siguientes:</p>
+        <ul>
+          <li>Cuenta de centro educativo</li>
+          <li>Cuenta personal de Google</li>
+          <li>Cuenta de Google Workspace</li>
+        </ul>
+        
+        <div class="note-box">
+          <p><strong>Nota:</strong> Los padres, madres y tutores no pueden acceder a la aplicación Classroom ni a las tareas de sus hijos debido a las leyes de privacidad. Solo pueden recibir comunicaciones periódicas si el profesor lo permite. Consulta más información en el artículo Información sobre las comunicaciones periódicas para padres, madres o tutores.</p>
+        </div>
+
+        <h2>Iniciar sesión</h2>
+        <p>Para iniciar sesión debes tener una conexión a Internet activa. Si ya sabes cómo iniciar sesión en Classroom, ve a classroom.google.com. De lo contrario, sigue los pasos detallados que explicamos a continuación.</p>
+
+        <h3>Iniciar sesión por primera vez</h3>
+        <ol>
+          <li>Ve a classroom.google.com.</li>
+          <li>Haz clic en Ir a Classroom.</li>
+          <li>Escribe la dirección de correo de tu cuenta de Classroom.</li>
+          <li>Haz clic en Siguiente.</li>
+          <li>Introduce tu contraseña.</li>
+          <li>Haz clic en Siguiente.</li>
+          <li>Si hay un mensaje de bienvenida, revísalo.</li>
+          <li>Haz clic en Aceptar.</li>
+          <li>Si utilizas una cuenta de Google Workspace for Education, haz clic en Soy alumno o Soy profesor.</li>
+        </ol>
+
+        <div class="note-box">
+          <p><strong>Nota:</strong> Los usuarios con cuentas personales de Google no verán esta opción.</p>
+        </div>
+        <p>Haz clic en Empezar.</p>
+
+        <h3>Cambiar de cuenta</h3>
+        <p>Si has iniciado sesión en varias cuentas y necesitas cambiar a la que utilizas con Classroom, haz lo siguiente:</p>
+        <ol>
+          <li>En la parte superior, haz clic en tu imagen de perfil o tu inicial.</li>
+          <li>Selecciona la cuenta.</li>
+        </ol>
+        <p>Si necesitas iniciar sesión con una cuenta de usuario diferente, consulta el artículo Iniciar sesión en varias cuentas a la vez.</p>
+
+        <h3>Obtener ayuda con mensajes de error específicos</h3>
+        <ul>
+          <li>Tu administrador no ha activado Classroom.</li>
+          <li>Este servicio ha sido desactivado por tu administrador.</li>
+          <li>No puedes usar Classroom con esta cuenta.</li>
+        </ul>
+        <p>¿Ha activado tu administrador Classroom? Para utilizar Classroom, pide al administrador de TI o de Google Workspace que active Classroom en tu centro educativo.</p>
+
+        <h3>Acceder a otras áreas de Classroom</h3>
+        <p>Ve al menú para acceder a las siguientes áreas:</p>
+        <ul>
+          <li><strong>Inicio:</strong> desplázate hasta tus clases.</li>
+          <li><strong>Calendario:</strong> consulta las fechas de entrega y accede a distintos elementos.</li>
+          <li><strong>Tareas pendientes:</strong> revisa los trabajos de tus clases.</li>
+          <li><strong>Ajustes:</strong> cambia la foto de perfil, la contraseña y las notificaciones.</li>
+        </ul>
+
+        <div class="note-box">
+          <p><strong>Nota:</strong> Para minimizar el menú hasta que se muestre una versión contraída, arriba a la izquierda, haz clic en Menú.</p>
+        </div>
+
+        <h3>Empezar a usar Classroom</h3>
+        <p>Si eres profesor, puedes crear una clase. Si eres alumno, puedes apuntarte a una clase.</p>
+
+        <h3>Recursos relacionados</h3>
+        <ul>
+          <li>Información sobre las cuentas de usuario de Classroom</li>
+          <li>Cambiar la función asignada</li>
+          <li>Unirse a una clase con un código de clase en Google Classroom</li>
+          <li>Unirse a una clase de Google Classroom con una invitación por correo</li>
+          <li>Unirse a una clase con un enlace de clase en Google Classroom</li>
+          <li>Solución de problemas (instrucciones para alumnos)</li>
+          <li>¿Cómo puedo cerrar sesión en Google Classroom?</li>
+          <li>Iniciar sesión en varias cuentas a la vez</li>
+          <li>Comunidad de ayuda de Google Classroom</li>
+        </ul>
+
+        <p style="font-size:12px; color:#70757a; margin-top:24px;">Esta página puede incluir contenido traducido con tecnología de IA. Las traducciones generadas por IA pueden contener errores.</p>
+      </article>
+    </main>
+  </div>
+
+  <!-- Vista Geometry Dash -->
+  <div id="gd-view">
+    <div id="gd-nav">
+      <button class="nav-btn active" id="btn-builtin" onclick="switchSubMode('builtin')">Nivel Oficial</button>
+      <button class="nav-btn" id="btn-menu" onclick="switchSubMode('menu')">Mis Niveles</button>
+      <button class="nav-btn" id="btn-editor" onclick="switchSubMode('editor')">Editor</button>
+    </div>
+
+    <div id="gd-header">
+      <div>Progreso: <span id="progress-text">0%</span></div>
+      <div>Modo: <span id="mode-text" class="hud-badge">CUBO</span></div>
+      <div>Velocidad: <span id="speed-text" class="hud-badge">1x</span></div>
+      <div>Estado: <span id="diff-text" class="hud-badge">OFICIAL</span></div>
+    </div>
+
+    <canvas id="gameCanvas" width="850" height="420"></canvas>
+
+    <!-- Menú de Niveles -->
+    <div id="level-menu">
+      <div class="menu-header">
+        <h3>Niveles Creados</h3>
+        <button class="btn-action btn-play" onclick="createNewLevel()">+ Crear Nuevo Nivel</button>
+      </div>
+      <div class="level-list" id="custom-levels-list"></div>
+    </div>
+
+    <!-- Barra del Editor -->
+    <div id="editor-toolbar">
+      <button class="tool-btn cam-btn" onclick="moveCamera(-120)">◄ Cam</button>
+      <button class="tool-btn cam-btn" onclick="moveCamera(120)">Cam ►</button>
+      <button class="tool-btn selected" onclick="selectTool('block', event)">Bloque</button>
+      <button class="tool-btn" onclick="selectTool('spike', event)">Pincho</button>
+      <button class="tool-btn" onclick="selectTool('pad_yellow', event)">Pad Am</button>
+      <button class="tool-btn" onclick="selectTool('orb_yellow', event)">Orbe Am</button>
+      <button class="tool-btn" onclick="selectTool('portal_cube', event)">Cubo</button>
+      <button class="tool-btn" onclick="selectTool('portal_ship', event)">Nave</button>
+      <button class="tool-btn" onclick="selectTool('portal_ball', event)">Bola</button>
+      <button class="tool-btn" onclick="selectTool('portal_wave', event)">Wave</button>
+      <button class="tool-btn" onclick="selectTool('speed_slow', event)">Vel -1x</button>
+      <button class="tool-btn" onclick="selectTool('speed_normal', event)">Vel 1x</button>
+      <button class="tool-btn" onclick="selectTool('speed_fast', event)">Vel 2x</button>
+      <button class="tool-btn" onclick="selectTool('portal_grav_blue', event)">Grav -</button>
+      <button class="tool-btn" onclick="selectTool('portal_grav_yellow', event)">Grav +</button>
+      <button class="tool-btn" onclick="selectTool('trigger_color', event)">Trigger Color</button>
+      <input type="color" id="trigger-color-input" class="color-picker" value="#ff0000">
+      <button class="tool-btn" onclick="selectTool('eraser', event)" style="color:#ff6666;">Borrar</button>
+      <button class="btn-action btn-play" onclick="saveLevel()">Guardar</button>
+    </div>
+  </div>
+
+  <script>
+    // --- BLOQUEO ANTI-EXTENSIONES / DEVTOOLS ---
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) || (e.ctrlKey && e.key.toLowerCase() === 'u')) {
+        e.preventDefault();
+      }
+    });
+
+    // --- ESTADO GLOBAL ---
+    let gameActive = false;
+    let animFrameId = null;
+    let subMode = 'builtin'; 
+
+    const classroomView = document.getElementById('classroom-view');
+    const gdView = document.getElementById('gd-view');
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const GRID_SIZE = 30;
+    const GROUND_Y = 330; // Múltiplo exacto de 30 para encajar perfectamente la rejilla
+    const CEILING_Y = 30;
+    let LEVEL_LENGTH = 14000;
+
+    let isHoldingInput = false;
+    let inputJustPressed = false;
+    let cameraX = 0;
+    let baseSpeed = 6.2;
+    let speedMult = 1.0;
+    let activeBgColor = "#091a10";
+    let selectedTool = 'block';
+
+    let customLevels = JSON.parse(localStorage.getItem('gd_levels_v3') || '[]');
+    let currentEditingIndex = -1;
+
+    let objects = [];
+    let player = { x: 100, y: GROUND_Y - 30, size: 30, vy: 0, gravityDir: 1, mode: 'cube', isGrounded: false, angle: 0 };
+
+    const builtinDifficulties = [
+      { name: "1. Fácil", color: "#2ea44f", bg: "#091a10", endX: 2300 },
+      { name: "2. Normal", color: "#1f6feb", bg: "#091526", endX: 4600 },
+      { name: "3. Difícil", color: "#d97706", bg: "#241503", endX: 6900 },
+      { name: "4. Más Difícil", color: "#dc2626", bg: "#290a0a", endX: 9200 },
+      { name: "5. Insano", color: "#9333ea", bg: "#1a0829", endX: 11500 },
+      { name: "6. Demonio", color: "#ef4444", bg: "#1f0303", endX: 14000 }
+    ];
+
+    // --- TECLA H ---
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'KeyH') {
+        e.preventDefault();
+        e.stopPropagation();
+        if (document.activeElement) document.activeElement.blur();
+        toggleGameMode();
+      }
+    }, true);
+
+    function toggleGameMode() {
+      gameActive = !gameActive;
+
+      if (gameActive) {
+        classroomView.style.display = 'none';
+        gdView.style.display = 'flex';
+        document.title = 'Geometry Dash Mini';
+        switchSubMode('builtin');
+        startLoop();
+      } else {
+        gdView.style.display = 'none';
+        classroomView.style.display = 'block';
+        document.title = 'Centro de Ayuda de Google Classroom';
+        stopLoop();
+      }
+    }
+
+    // --- CONTROLES DE TECLADO ---
+    window.addEventListener('keydown', (e) => {
+      if (!gameActive || e.code === 'KeyH') return;
+
+      if (subMode === 'editor') {
+        if (e.key === 'ArrowRight') moveCamera(60);
+        if (e.key === 'ArrowLeft') moveCamera(-60);
+      } else {
+        if (e.code === 'Space' || e.code === 'ArrowUp') {
+          if (!isHoldingInput) inputJustPressed = true;
+          isHoldingInput = true;
+        }
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      if (e.code === 'Space' || e.code === 'ArrowUp') isHoldingInput = false;
+    });
+
+    canvas.addEventListener('mousedown', () => {
+      if (gameActive && subMode !== 'editor') {
+        if (!isHoldingInput) inputJustPressed = true;
+        isHoldingInput = true;
+      }
+    });
+    window.addEventListener('mouseup', () => { isHoldingInput = false; });
+
+    function moveCamera(amount) {
+      cameraX = Math.max(0, cameraX + amount);
+    }
+
+    // --- MODOS DE NAVEGACIÓN ---
+    function switchSubMode(mode) {
+      subMode = mode;
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('level-menu').style.display = 'none';
+      document.getElementById('editor-toolbar').style.display = 'none';
+      canvas.style.display = 'block';
+
+      if (mode === 'builtin') {
+        document.getElementById('btn-builtin').classList.add('active');
+        generateBuiltinLevel();
+        resetPlayer();
+      } else if (mode === 'menu') {
+        document.getElementById('btn-menu').classList.add('active');
+        canvas.style.display = 'none';
+        document.getElementById('level-menu').style.display = 'flex';
+        renderLevelList();
+      } else if (mode === 'editor') {
+        document.getElementById('btn-editor').classList.add('active');
+        document.getElementById('editor-toolbar').style.display = 'flex';
+        if (currentEditingIndex === -1) createNewLevel(false);
+      }
+    }
+
+    function selectTool(tool, ev) {
+      selectedTool = tool;
+      document.querySelectorAll('#editor-toolbar .tool-btn:not(.cam-btn)').forEach(b => b.classList.remove('selected'));
+      if (ev && ev.target) ev.target.classList.add('selected');
+    }
+
+    // --- NIVELES PERSONALIZADOS ---
+    function renderLevelList() {
+      const container = document.getElementById('custom-levels-list');
+      container.innerHTML = '';
+      customLevels.forEach((lvl, idx) => {
+        const card = document.createElement('div');
+        card.className = 'level-card';
+        card.innerHTML = `
+          <span><strong>${lvl.name}</strong> (${lvl.objects.length} objetos)</span>
+          <div>
+            <button class="btn-action btn-play" onclick="playCustomLevel(${idx})">Jugar</button>
+            <button class="btn-action btn-edit" onclick="editCustomLevel(${idx})">Editar</button>
+            <button class="btn-action btn-delete" onclick="deleteCustomLevel(${idx})">Borrar</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function createNewLevel(switchToEditor = true) {
+      const name = "Nivel " + (customLevels.length + 1);
+      const newLvl = { name: name, objects: [] };
+      customLevels.push(newLvl);
+      currentEditingIndex = customLevels.length - 1;
+      saveToStorage();
+      if (switchToEditor) switchSubMode('editor');
+      else objects = newLvl.objects;
+    }
+
+    function saveLevel() {
+      if (currentEditingIndex !== -1) {
+        customLevels[currentEditingIndex].objects = objects;
+        saveToStorage();
+        alert("Nivel guardado correctamente.");
+      }
+    }
+
+    function saveToStorage() {
+      localStorage.setItem('gd_levels_v3', JSON.stringify(customLevels));
+    }
+
+    function editCustomLevel(idx) {
+      currentEditingIndex = idx;
+      objects = customLevels[idx].objects;
+      switchSubMode('editor');
+    }
+
+    function playCustomLevel(idx) {
+      objects = customLevels[idx].objects;
+      LEVEL_LENGTH = Math.max(3000, ...objects.map(o => o.x + 500));
+      subMode = 'playing_custom';
+      document.getElementById('level-menu').style.display = 'none';
+      canvas.style.display = 'block';
+      resetPlayer();
+    }
+
+    function deleteCustomLevel(idx) {
+      customLevels.splice(idx, 1);
+      saveToStorage();
+      renderLevelList();
+    }
+
+    // --- CLIC EN EDITOR Y ENCAJE PERFECTO A REJILLA ---
+    canvas.addEventListener('click', (e) => {
+      if (subMode !== 'editor') return;
+      const rect = canvas.getBoundingClientRect();
+      
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+
+      const clickX = (e.clientX - rect.left) * scaleX + cameraX;
+      const clickY = (e.clientY - rect.top) * scaleY;
+
+      const gridX = Math.floor(clickX / GRID_SIZE) * GRID_SIZE;
+      const gridY = Math.floor(clickY / GRID_SIZE) * GRID_SIZE;
+
+      if (selectedTool === 'eraser') {
+        objects = objects.filter(o => !(Math.abs(o.x - gridX) < 15 && Math.abs(o.y - gridY) < 15));
+      } else {
+        const colorVal = document.getElementById('trigger-color-input').value;
+        let newObj = { type: selectedTool, x: gridX, y: gridY, w: 30, h: 30, r: 14 };
+        if (selectedTool === 'trigger_color') newObj.color = colorVal;
+        
+        if (selectedTool.startsWith('orb')) {
+          newObj.x = gridX + 15;
+          newObj.y = gridY + 15;
+        }
+
+        objects.push(newObj);
+      }
+    });
+
+    function generateBuiltinLevel() {
+      objects = [
+        { type: 'spike', x: 600, y: GROUND_Y - 30, w: 30, h: 30 },
+        { type: 'pad_yellow', x: 900, y: GROUND_Y - 8, w: 30, h: 8 },
+        { type: 'block', x: 1100, y: GROUND_Y - 60, w: 90, h: 60 },
+        { type: 'orb_yellow', x: 1415, y: GROUND_Y - 75, r: 14 },
+        { type: 'portal_ship', x: 2100, y: GROUND_Y - 150, w: 30, h: 90 },
+        { type: 'speed_fast', x: 2300, y: GROUND_Y - 90, w: 30, h: 60 },
+        { type: 'portal_wave', x: 3800, y: GROUND_Y - 150, w: 30, h: 90 },
+        { type: 'portal_ball', x: 5000, y: GROUND_Y - 150, w: 30, h: 90 },
+        { type: 'portal_cube', x: 6600, y: GROUND_Y - 150, w: 30, h: 90 },
+        { type: 'trigger_color', x: 7000, y: GROUND_Y - 90, w: 30, h: 30, color: '#4a0e4e' },
+        { type: 'speed_slow', x: 7200, y: GROUND_Y - 90, w: 30, h: 60 },
+        { type: 'portal_grav_blue', x: 7600, y: GROUND_Y - 150, w: 30, h: 90 }
+      ];
+      LEVEL_LENGTH = 14000;
+    }
+
+    function resetPlayer() {
+      player.x = 100;
+      player.y = GROUND_Y - player.size;
+      player.vy = 0;
+      player.gravityDir = 1;
+      player.mode = 'cube';
+      player.angle = 0;
+      cameraX = 0;
+      speedMult = 1.0;
+      activeBgColor = "#091a10";
+    }
+
+    // --- BUCLE PRINCIPAL ---
+    function startLoop() {
+      if (!animFrameId) gameLoop();
+    }
+
+    function stopLoop() {
+      if (animFrameId) {
+        cancelAnimationFrame(animFrameId);
+        animFrameId = null;
+      }
+    }
+
+    function gameLoop() {
+      if (gameActive) {
+        let currentSpeed = baseSpeed * speedMult;
+
+        if (subMode === 'builtin' || subMode === 'playing_custom') {
+          player.x += currentSpeed;
+
+          if (player.mode === 'cube') {
+            player.vy += 0.8 * player.gravityDir;
+            if (inputJustPressed && player.isGrounded) {
+              player.vy = -12.5 * player.gravityDir;
+              player.isGrounded = false;
+            }
+          } else if (player.mode === 'ship') {
+            if (isHoldingInput) player.vy -= 0.65 * player.gravityDir;
+            else player.vy += 0.65 * player.gravityDir;
+            player.vy = Math.max(-7, Math.min(7, player.vy));
+          } else if (player.mode === 'ball') {
+            player.vy += 0.75 * player.gravityDir;
+            if (inputJustPressed && player.isGrounded) {
+              player.gravityDir *= -1;
+              player.vy = 4 * player.gravityDir;
+              player.isGrounded = false;
+            }
+          } else if (player.mode === 'wave') {
+            player.vy = isHoldingInput ? -currentSpeed * player.gravityDir : currentSpeed * player.gravityDir;
+          }
+
+          player.y += player.vy;
+
+          player.isGrounded = false;
+          if (player.gravityDir === 1 && player.y >= GROUND_Y - player.size) {
+            player.y = GROUND_Y - player.size;
+            player.vy = 0;
+            player.isGrounded = true;
+            if (player.mode === 'wave') resetPlayer();
+          } else if (player.gravityDir === -1 && player.y <= CEILING_Y) {
+            player.y = CEILING_Y;
+            player.vy = 0;
+            player.isGrounded = true;
+            if (player.mode === 'wave') resetPlayer();
+          }
+
+          if (player.mode === 'cube') {
+            if (!player.isGrounded) player.angle += 0.15 * player.gravityDir;
+            else player.angle = Math.round(player.angle / (Math.PI / 2)) * (Math.PI / 2);
+          } else if (player.mode === 'ship') {
+            player.angle = player.vy * 0.06;
+          } else if (player.mode === 'ball') {
+            player.angle += 0.1 * player.gravityDir;
+          } else if (player.mode === 'wave') {
+            player.angle = player.vy > 0 ? Math.PI / 4 : -Math.PI / 4;
+          }
+
+          cameraX = player.x - 120;
+
+          let pHitbox = { x: player.x + 4, y: player.y + 4, w: player.size - 8, h: player.size - 8 };
+
+          for (let obj of objects) {
+            if (obj.x > cameraX - 100 && obj.x < cameraX + 900) {
+              if (obj.type === 'block') {
+                let bBox = { x: obj.x, y: obj.y, w: obj.w, h: obj.h };
+                if (pHitbox.x < bBox.x + bBox.w && pHitbox.x + pHitbox.w > bBox.x &&
+                    pHitbox.y < bBox.y + bBox.h && pHitbox.y + pHitbox.h > bBox.y) {
+                  if (player.mode !== 'wave' && player.vy * player.gravityDir >= 0 && Math.abs((player.y + (player.gravityDir === 1 ? player.size : 0)) - (player.gravityDir === 1 ? obj.y : obj.y + obj.h)) < 16) {
+                    player.y = player.gravityDir === 1 ? obj.y - player.size : obj.y + obj.h;
+                    player.vy = 0;
+                    player.isGrounded = true;
+                  } else {
+                    resetPlayer();
+                    break;
+                  }
+                }
+              } else if (obj.type === 'spike') {
+                let sHitbox = { x: obj.x + 7, y: obj.y + 8, w: obj.w - 14, h: obj.h - 10 };
+                if (pHitbox.x < sHitbox.x + sHitbox.w && pHitbox.x + pHitbox.w > sHitbox.x &&
+                    pHitbox.y < sHitbox.y + sHitbox.h && pHitbox.y + pHitbox.h > sHitbox.y) {
+                  resetPlayer();
+                  break;
+                }
+              } else if (obj.type.startsWith('orb')) {
+                let dist = Math.hypot((player.x + player.size/2) - obj.x, (player.y + player.size/2) - obj.y);
+                if (dist < obj.r + 15 && inputJustPressed) {
+                  if (obj.type === 'orb_yellow') player.vy = -12 * player.gravityDir;
+                  inputJustPressed = false;
+                }
+              } else if (obj.type.startsWith('pad')) {
+                if (pHitbox.x < obj.x + obj.w && pHitbox.x + pHitbox.w > obj.x && pHitbox.y + pHitbox.h >= obj.y) {
+                  if (obj.type === 'pad_yellow') player.vy = -14 * player.gravityDir;
+                }
+              } else if (obj.type.startsWith('portal')) {
+                if (Math.abs(player.x - obj.x) < 20) {
+                  if (obj.type === 'portal_ship') player.mode = 'ship';
+                  if (obj.type === 'portal_cube') player.mode = 'cube';
+                  if (obj.type === 'portal_ball') player.mode = 'ball';
+                  if (obj.type === 'portal_wave') player.mode = 'wave';
+                  if (obj.type === 'portal_grav_blue') player.gravityDir = -1;
+                  if (obj.type === 'portal_grav_yellow') player.gravityDir = 1;
+                }
+              } else if (obj.type.startsWith('speed')) {
+                if (Math.abs(player.x - obj.x) < 20) {
+                  if (obj.type === 'speed_slow') speedMult = 0.6;
+                  if (obj.type === 'speed_normal') speedMult = 1.0;
+                  if (obj.type === 'speed_fast') speedMult = 1.6;
+                }
+              } else if (obj.type === 'trigger_color') {
+                if (player.x >= obj.x) activeBgColor = obj.color;
+              }
+            }
+          }
+          inputJustPressed = false;
+        }
+
+        // Renderizado
+        let progress = Math.min(100, Math.floor((player.x / LEVEL_LENGTH) * 100));
+        document.getElementById('progress-text').innerText = `${progress}%`;
+        document.getElementById('mode-text').innerText = player.mode.toUpperCase();
+        document.getElementById('speed-text').innerText = `${speedMult}x`;
+
+        if (subMode === 'builtin') {
+          let currentDiff = builtinDifficulties.find(d => player.x < d.endX) || builtinDifficulties[5];
+          let diffEl = document.getElementById('diff-text');
+          diffEl.innerText = currentDiff.name;
+          diffEl.style.backgroundColor = currentDiff.color;
+          ctx.fillStyle = currentDiff.bg;
+        } else {
+          let diffEl = document.getElementById('diff-text');
+          diffEl.innerText = subMode === 'editor' ? 'EDITOR' : 'CUSTOM';
+          diffEl.style.backgroundColor = '#1f6feb';
+          ctx.fillStyle = activeBgColor;
+        }
+
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Renderizado de Rejilla perfectamente alineada con GROUND_Y
+        if (subMode === 'editor') {
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+          ctx.lineWidth = 1;
+
+          let offsetX = cameraX % GRID_SIZE;
+          for (let x = -offsetX; x <= canvas.width; x += GRID_SIZE) {
+            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+          }
+
+          for (let y = GROUND_Y; y >= 0; y -= GRID_SIZE) {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+          }
+          for (let y = GROUND_Y + GRID_SIZE; y <= canvas.height; y += GRID_SIZE) {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+          }
+        }
+
+        // Suelo y Techo
+        ctx.fillStyle = "#161b22";
+        ctx.fillRect(0, GROUND_Y, canvas.width, canvas.height - GROUND_Y);
+        ctx.fillRect(0, 0, canvas.width, CEILING_Y);
+        ctx.strokeStyle = "#30363d";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, GROUND_Y); ctx.lineTo(canvas.width, GROUND_Y);
+        ctx.moveTo(0, CEILING_Y); ctx.lineTo(canvas.width, CEILING_Y);
+        ctx.stroke();
+
+        // Objetos
+        for (let obj of objects) {
+          let dx = obj.x - cameraX;
+          if (dx > -60 && dx < 900) {
+            if (obj.type === 'spike') {
+              ctx.fillStyle = "#ff4444";
+              ctx.beginPath();
+              ctx.moveTo(dx, obj.y + obj.h); ctx.lineTo(dx + obj.w / 2, obj.y); ctx.lineTo(dx + obj.w, obj.y + obj.h);
+              ctx.closePath(); ctx.fill(); ctx.strokeStyle = "#fff"; ctx.stroke();
+            } else if (obj.type === 'block') {
+              ctx.fillStyle = "#21262d"; ctx.fillRect(dx, obj.y, obj.w, obj.h);
+              ctx.strokeStyle = "#8b949e"; ctx.strokeRect(dx, obj.y, obj.w, obj.h);
+            } else if (obj.type.startsWith('orb')) {
+              ctx.fillStyle = "#ffd700";
+              ctx.beginPath(); ctx.arc(dx, obj.y, obj.r, 0, Math.PI * 2); ctx.fill();
+              ctx.strokeStyle = "#fff"; ctx.stroke();
+            } else if (obj.type.startsWith('pad')) {
+              ctx.fillStyle = "#ffd700";
+              ctx.fillRect(dx, obj.y, obj.w, obj.h);
+            } else if (obj.type.startsWith('portal')) {
+              ctx.fillStyle = obj.type.includes('ship') ? "#00ffcc" : 
+                              obj.type.includes('ball') ? "#ff8800" :
+                              obj.type.includes('wave') ? "#00ffff" :
+                              obj.type.includes('cube') ? "#0099ff" : "#a855f7";
+              ctx.fillRect(dx, obj.y, obj.w, obj.h);
+            } else if (obj.type.startsWith('speed')) {
+              ctx.fillStyle = obj.type.includes('slow') ? "#888888" :
+                              obj.type.includes('normal') ? "#33cc33" : "#ff3333";
+              ctx.fillRect(dx, obj.y, obj.w, obj.h);
+            } else if (obj.type === 'trigger_color') {
+              ctx.fillStyle = obj.color || '#ff0000';
+              ctx.fillRect(dx, obj.y, obj.w, obj.h);
+              ctx.strokeStyle = '#fff'; ctx.strokeRect(dx, obj.y, obj.w, obj.h);
+            }
+          }
+        }
+
+        // Jugador
+        if (subMode !== 'editor') {
+          ctx.save();
+          ctx.translate(player.x - cameraX + player.size / 2, player.y + player.size / 2);
+          ctx.rotate(player.angle);
+
+          if (player.mode === 'cube') {
+            ctx.fillStyle = "#00f0ff"; ctx.fillRect(-player.size/2, -player.size/2, player.size, player.size);
+            ctx.strokeStyle = "#000"; ctx.lineWidth = 2; ctx.strokeRect(-player.size/2, -player.size/2, player.size, player.size);
+          } else if (player.mode === 'ship') {
+            ctx.fillStyle = "#ff0055";
+            ctx.beginPath(); ctx.moveTo(-15, 10); ctx.lineTo(15, 0); ctx.lineTo(-15, -10); ctx.closePath(); ctx.fill();
+          } else if (player.mode === 'ball') {
+            ctx.fillStyle = "#ffcc00"; ctx.beginPath(); ctx.arc(0, 0, player.size/2, 0, Math.PI*2); ctx.fill();
+            ctx.strokeStyle = "#000"; ctx.stroke();
+          } else if (player.mode === 'wave') {
+            ctx.fillStyle = "#00ffff";
+            ctx.beginPath(); ctx.moveTo(-12, 10); ctx.lineTo(12, 0); ctx.lineTo(-12, -10); ctx.closePath(); ctx.fill();
+          }
+          ctx.restore();
+        }
+
+        animFrameId = requestAnimationFrame(gameLoop);
+      }
+    }
+  </script>
+</body>
 </html>
