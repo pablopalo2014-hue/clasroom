@@ -139,9 +139,9 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
-    const GROUND_Y = 340;
-    const CEILING_Y = 40;
     const GRID_SIZE = 30;
+    const GROUND_Y = 330; // Ajustado a múltiplo de 30 para perfecta alineación
+    const CEILING_Y = 30;
     let LEVEL_LENGTH = 14000;
 
     let isHoldingInput = false;
@@ -156,7 +156,7 @@
     let currentEditingIndex = -1;
 
     let objects = [];
-    let player = { x: 100, y: GROUND_Y - 28, size: 28, vy: 0, gravityDir: 1, mode: 'cube', isGrounded: false, angle: 0 };
+    let player = { x: 100, y: GROUND_Y - 30, size: 30, vy: 0, gravityDir: 1, mode: 'cube', isGrounded: false, angle: 0 };
 
     const builtinDifficulties = [
       { name: "1. Fácil", color: "#2ea44f", bg: "#091a10", endX: 2300 },
@@ -167,7 +167,7 @@
       { name: "6. Demonio", color: "#ef4444", bg: "#1f0303", endX: 14000 }
     ];
 
-    // --- CONTROLADOR DE LA TECLA H (Captura aislada) ---
+    // --- TECLA H (Captura aislada) ---
     window.addEventListener('keydown', (e) => {
       if (e.code === 'KeyH') {
         e.preventDefault();
@@ -313,12 +313,16 @@
       renderLevelList();
     }
 
-    // --- EDITOR ---
+    // --- EDITOR CON ESCALADO DE CLIC Y REJILLA PERFECTA ---
     canvas.addEventListener('click', (e) => {
       if (subMode !== 'editor') return;
       const rect = canvas.getBoundingClientRect();
-      const clickX = e.clientX - rect.left + cameraX;
-      const clickY = e.clientY - rect.top;
+      
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+
+      const clickX = (e.clientX - rect.left) * scaleX + cameraX;
+      const clickY = (e.clientY - rect.top) * scaleY;
 
       const gridX = Math.floor(clickX / GRID_SIZE) * GRID_SIZE;
       const gridY = Math.floor(clickY / GRID_SIZE) * GRID_SIZE;
@@ -329,6 +333,12 @@
         const colorVal = document.getElementById('trigger-color-input').value;
         let newObj = { type: selectedTool, x: gridX, y: gridY, w: 30, h: 30, r: 14 };
         if (selectedTool === 'trigger_color') newObj.color = colorVal;
+        
+        if (selectedTool.startsWith('orb')) {
+          newObj.x = gridX + 15;
+          newObj.y = gridY + 15;
+        }
+
         objects.push(newObj);
       }
     });
@@ -336,17 +346,17 @@
     function generateBuiltinLevel() {
       objects = [
         { type: 'spike', x: 600, y: GROUND_Y - 30, w: 30, h: 30 },
-        { type: 'pad_yellow', x: 900, y: GROUND_Y - 8, w: 32, h: 8 },
+        { type: 'pad_yellow', x: 900, y: GROUND_Y - 8, w: 30, h: 8 },
         { type: 'block', x: 1100, y: GROUND_Y - 60, w: 90, h: 60 },
-        { type: 'orb_yellow', x: 1400, y: GROUND_Y - 80, r: 14 },
-        { type: 'portal_ship', x: 2100, y: GROUND_Y - 140, w: 30, h: 90 },
-        { type: 'speed_fast', x: 2300, y: GROUND_Y - 100, w: 30, h: 60 },
-        { type: 'portal_wave', x: 3800, y: GROUND_Y - 140, w: 30, h: 90 },
-        { type: 'portal_ball', x: 5000, y: GROUND_Y - 140, w: 30, h: 90 },
-        { type: 'portal_cube', x: 6600, y: GROUND_Y - 140, w: 30, h: 90 },
-        { type: 'trigger_color', x: 7000, y: GROUND_Y - 100, w: 30, h: 30, color: '#4a0e4e' },
-        { type: 'speed_slow', x: 7200, y: GROUND_Y - 100, w: 30, h: 60 },
-        { type: 'portal_grav_blue', x: 7600, y: GROUND_Y - 140, w: 30, h: 90 }
+        { type: 'orb_yellow', x: 1415, y: GROUND_Y - 75, r: 14 },
+        { type: 'portal_ship', x: 2100, y: GROUND_Y - 150, w: 30, h: 90 },
+        { type: 'speed_fast', x: 2300, y: GROUND_Y - 90, w: 30, h: 60 },
+        { type: 'portal_wave', x: 3800, y: GROUND_Y - 150, w: 30, h: 90 },
+        { type: 'portal_ball', x: 5000, y: GROUND_Y - 150, w: 30, h: 90 },
+        { type: 'portal_cube', x: 6600, y: GROUND_Y - 150, w: 30, h: 90 },
+        { type: 'trigger_color', x: 7000, y: GROUND_Y - 90, w: 30, h: 30, color: '#4a0e4e' },
+        { type: 'speed_slow', x: 7200, y: GROUND_Y - 90, w: 30, h: 60 },
+        { type: 'portal_grav_blue', x: 7600, y: GROUND_Y - 150, w: 30, h: 90 }
       ];
       LEVEL_LENGTH = 14000;
     }
@@ -382,7 +392,7 @@
         if (subMode === 'builtin' || subMode === 'playing_custom') {
           player.x += currentSpeed;
 
-          // Movimientos según el modo
+          // Movimiento según modo
           if (player.mode === 'cube') {
             player.vy += 0.8 * player.gravityDir;
             if (inputJustPressed && player.isGrounded) {
@@ -406,7 +416,7 @@
 
           player.y += player.vy;
 
-          // Choques suelo y techo
+          // Suelo y Techo
           player.isGrounded = false;
           if (player.gravityDir === 1 && player.y >= GROUND_Y - player.size) {
             player.y = GROUND_Y - player.size;
@@ -420,7 +430,7 @@
             if (player.mode === 'wave') resetPlayer();
           }
 
-          // Ángulo de rotación
+          // Rotación
           if (player.mode === 'cube') {
             if (!player.isGrounded) player.angle += 0.15 * player.gravityDir;
             else player.angle = Math.round(player.angle / (Math.PI / 2)) * (Math.PI / 2);
@@ -430,169 +440,3 @@
             player.angle += 0.1 * player.gravityDir;
           } else if (player.mode === 'wave') {
             player.angle = player.vy > 0 ? Math.PI / 4 : -Math.PI / 4;
-          }
-
-          cameraX = player.x - 120;
-
-          let pHitbox = { x: player.x + 4, y: player.y + 4, w: player.size - 8, h: player.size - 8 };
-
-          for (let obj of objects) {
-            if (obj.x > cameraX - 100 && obj.x < cameraX + 900) {
-              if (obj.type === 'block') {
-                let bBox = { x: obj.x, y: obj.y, w: obj.w, h: obj.h };
-                if (pHitbox.x < bBox.x + bBox.w && pHitbox.x + pHitbox.w > bBox.x &&
-                    pHitbox.y < bBox.y + bBox.h && pHitbox.y + pHitbox.h > bBox.y) {
-                  if (player.mode !== 'wave' && player.vy * player.gravityDir >= 0 && Math.abs((player.y + (player.gravityDir === 1 ? player.size : 0)) - (player.gravityDir === 1 ? obj.y : obj.y + obj.h)) < 16) {
-                    player.y = player.gravityDir === 1 ? obj.y - player.size : obj.y + obj.h;
-                    player.vy = 0;
-                    player.isGrounded = true;
-                  } else {
-                    resetPlayer();
-                    break;
-                  }
-                }
-              } else if (obj.type === 'spike') {
-                let sHitbox = { x: obj.x + 7, y: obj.y + 8, w: obj.w - 14, h: obj.h - 10 };
-                if (pHitbox.x < sHitbox.x + sHitbox.w && pHitbox.x + pHitbox.w > sHitbox.x &&
-                    pHitbox.y < sHitbox.y + sHitbox.h && pHitbox.y + pHitbox.h > sHitbox.y) {
-                  resetPlayer();
-                  break;
-                }
-              } else if (obj.type.startsWith('orb')) {
-                let dist = Math.hypot((player.x + player.size/2) - obj.x, (player.y + player.size/2) - obj.y);
-                if (dist < obj.r + 15 && inputJustPressed) {
-                  if (obj.type === 'orb_yellow') player.vy = -12 * player.gravityDir;
-                  inputJustPressed = false;
-                }
-              } else if (obj.type.startsWith('pad')) {
-                if (pHitbox.x < obj.x + obj.w && pHitbox.x + pHitbox.w > obj.x && pHitbox.y + pHitbox.h >= obj.y) {
-                  if (obj.type === 'pad_yellow') player.vy = -14 * player.gravityDir;
-                }
-              } else if (obj.type.startsWith('portal')) {
-                if (Math.abs(player.x - obj.x) < 20) {
-                  if (obj.type === 'portal_ship') player.mode = 'ship';
-                  if (obj.type === 'portal_cube') player.mode = 'cube';
-                  if (obj.type === 'portal_ball') player.mode = 'ball';
-                  if (obj.type === 'portal_wave') player.mode = 'wave';
-                  if (obj.type === 'portal_grav_blue') player.gravityDir = -1;
-                  if (obj.type === 'portal_grav_yellow') player.gravityDir = 1;
-                }
-              } else if (obj.type.startsWith('speed')) {
-                if (Math.abs(player.x - obj.x) < 20) {
-                  if (obj.type === 'speed_slow') speedMult = 0.6;
-                  if (obj.type === 'speed_normal') speedMult = 1.0;
-                  if (obj.type === 'speed_fast') speedMult = 1.6;
-                }
-              } else if (obj.type === 'trigger_color') {
-                if (player.x >= obj.x) activeBgColor = obj.color;
-              }
-            }
-          }
-          inputJustPressed = false;
-        }
-
-        // Renderizado
-        let progress = Math.min(100, Math.floor((player.x / LEVEL_LENGTH) * 100));
-        document.getElementById('progress-text').innerText = `${progress}%`;
-        document.getElementById('mode-text').innerText = player.mode.toUpperCase();
-        document.getElementById('speed-text').innerText = `${speedMult}x`;
-
-        if (subMode === 'builtin') {
-          let currentDiff = builtinDifficulties.find(d => player.x < d.endX) || builtinDifficulties[5];
-          let diffEl = document.getElementById('diff-text');
-          diffEl.innerText = currentDiff.name;
-          diffEl.style.backgroundColor = currentDiff.color;
-          ctx.fillStyle = currentDiff.bg;
-        } else {
-          let diffEl = document.getElementById('diff-text');
-          diffEl.innerText = subMode === 'editor' ? 'EDITOR' : 'CUSTOM';
-          diffEl.style.backgroundColor = '#1f6feb';
-          ctx.fillStyle = activeBgColor;
-        }
-
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        if (subMode === 'editor') {
-          ctx.strokeStyle = '#1c2128';
-          ctx.lineWidth = 1;
-          for (let x = - (cameraX % GRID_SIZE); x < canvas.width; x += GRID_SIZE) {
-            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
-          }
-          for (let y = 0; y < canvas.height; y += GRID_SIZE) {
-            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
-          }
-        }
-
-        ctx.fillStyle = "#161b22";
-        ctx.fillRect(0, GROUND_Y, canvas.width, canvas.height - GROUND_Y);
-        ctx.fillRect(0, 0, canvas.width, CEILING_Y);
-        ctx.strokeStyle = "#30363d";
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(0, GROUND_Y); ctx.lineTo(canvas.width, GROUND_Y);
-        ctx.moveTo(0, CEILING_Y); ctx.lineTo(canvas.width, CEILING_Y);
-        ctx.stroke();
-
-        for (let obj of objects) {
-          let dx = obj.x - cameraX;
-          if (dx > -60 && dx < 900) {
-            if (obj.type === 'spike') {
-              ctx.fillStyle = "#ff4444";
-              ctx.beginPath();
-              ctx.moveTo(dx, obj.y + obj.h); ctx.lineTo(dx + obj.w / 2, obj.y); ctx.lineTo(dx + obj.w, obj.y + obj.h);
-              ctx.closePath(); ctx.fill(); ctx.strokeStyle = "#fff"; ctx.stroke();
-            } else if (obj.type === 'block') {
-              ctx.fillStyle = "#21262d"; ctx.fillRect(dx, obj.y, obj.w, obj.h);
-              ctx.strokeStyle = "#8b949e"; ctx.strokeRect(dx, obj.y, obj.w, obj.h);
-            } else if (obj.type.startsWith('orb')) {
-              ctx.fillStyle = "#ffd700";
-              ctx.beginPath(); ctx.arc(dx, obj.y, obj.r, 0, Math.PI * 2); ctx.fill();
-              ctx.strokeStyle = "#fff"; ctx.stroke();
-            } else if (obj.type.startsWith('pad')) {
-              ctx.fillStyle = "#ffd700";
-              ctx.fillRect(dx, obj.y, obj.w, obj.h);
-            } else if (obj.type.startsWith('portal')) {
-              ctx.fillStyle = obj.type.includes('ship') ? "#00ffcc" : 
-                              obj.type.includes('ball') ? "#ff8800" :
-                              obj.type.includes('wave') ? "#00ffff" :
-                              obj.type.includes('cube') ? "#0099ff" : "#a855f7";
-              ctx.fillRect(dx, obj.y, obj.w, obj.h);
-            } else if (obj.type.startsWith('speed')) {
-              ctx.fillStyle = obj.type.includes('slow') ? "#888888" :
-                              obj.type.includes('normal') ? "#33cc33" : "#ff3333";
-              ctx.fillRect(dx, obj.y, obj.w, obj.h);
-            } else if (obj.type === 'trigger_color') {
-              ctx.fillStyle = obj.color || '#ff0000';
-              ctx.fillRect(dx, obj.y, obj.w, obj.h);
-              ctx.strokeStyle = '#fff'; ctx.strokeRect(dx, obj.y, obj.w, obj.h);
-            }
-          }
-        }
-
-        if (subMode !== 'editor') {
-          ctx.save();
-          ctx.translate(player.x - cameraX + player.size / 2, player.y + player.size / 2);
-          ctx.rotate(player.angle);
-
-          if (player.mode === 'cube') {
-            ctx.fillStyle = "#00f0ff"; ctx.fillRect(-player.size/2, -player.size/2, player.size, player.size);
-            ctx.strokeStyle = "#000"; ctx.lineWidth = 2; ctx.strokeRect(-player.size/2, -player.size/2, player.size, player.size);
-          } else if (player.mode === 'ship') {
-            ctx.fillStyle = "#ff0055";
-            ctx.beginPath(); ctx.moveTo(-15, 10); ctx.lineTo(15, 0); ctx.lineTo(-15, -10); ctx.closePath(); ctx.fill();
-          } else if (player.mode === 'ball') {
-            ctx.fillStyle = "#ffcc00"; ctx.beginPath(); ctx.arc(0, 0, player.size/2, 0, Math.PI*2); ctx.fill();
-            ctx.strokeStyle = "#000"; ctx.stroke();
-          } else if (player.mode === 'wave') {
-            ctx.fillStyle = "#00ffff";
-            ctx.beginPath(); ctx.moveTo(-12, 10); ctx.lineTo(12, 0); ctx.lineTo(-12, -10); ctx.closePath(); ctx.fill();
-          }
-          ctx.restore();
-        }
-
-        animFrameId = requestAnimationFrame(gameLoop);
-      }
-    }
-  </script>
-</body>
-</html>
