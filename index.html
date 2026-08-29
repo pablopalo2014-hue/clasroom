@@ -6,25 +6,30 @@
   <title>Centro de Ayuda de Google Classroom</title>
   <link rel="icon" type="image/png" href="https://ssl.gstatic.com/classroom/favicon.png">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Google Sans', Roboto, Arial, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    /* --- Vista Google Classroom con tipografía cuadrada --- */
     body, html { width: 100%; height: 100%; overflow-x: hidden; background-color: #ffffff; color: #202124; user-select: none; }
+    .square-font, .square-font * { font-family: 'Consolas', 'Courier New', 'Roboto Mono', monospace !important; }
 
-    /* --- Vista Google Classroom --- */
     #classroom-view { display: block; width: 100%; min-height: 100vh; }
     header { background: #fff; border-bottom: 1px solid #dadce0; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
     .logo-container { display: flex; align-items: center; gap: 12px; }
     .logo-container img { width: 32px; height: 32px; }
-    .logo-container h1 { font-size: 20px; color: #5f6368; font-weight: 400; }
-    .main-container { max-width: 850px; margin: 40px auto; padding: 0 24px; }
-    .classroom-article h2 { font-size: 32px; color: #1a73e8; font-weight: 400; margin-bottom: 24px; line-height: 1.2; }
-    .classroom-article p { font-size: 16px; line-height: 1.6; color: #3c4043; margin-bottom: 20px; }
-    .classroom-article ul { margin: 0 0 24px 28px; }
-    .classroom-article li { font-size: 16px; line-height: 1.8; color: #3c4043; }
-    .note-box { background-color: #e8f0fe; border-left: 4px solid #1a73e8; border-radius: 0 8px 8px 0; padding: 18px 20px; margin-top: 24px; }
-    .note-box p { margin-bottom: 0; color: #174ea6; font-size: 15px; }
+    .logo-container h1 { font-size: 20px; color: #5f6368; font-weight: 600; }
+    .main-container { max-width: 850px; margin: 30px auto; padding: 0 24px; }
+    
+    .classroom-article h2 { font-size: 26px; color: #1a73e8; font-weight: 700; margin: 24px 0 16px 0; line-height: 1.2; }
+    .classroom-article h3 { font-size: 20px; color: #202124; font-weight: 700; margin: 20px 0 12px 0; }
+    .classroom-article p { font-size: 15px; line-height: 1.6; color: #3c4043; margin-bottom: 16px; }
+    .classroom-article ul, .classroom-article ol { margin: 0 0 20px 28px; }
+    .classroom-article li { font-size: 15px; line-height: 1.8; color: #3c4043; }
+    
+    .note-box { background-color: #e8f0fe; border-left: 4px solid #1a73e8; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0; }
+    .note-box p { margin-bottom: 0; color: #174ea6; font-size: 14px; }
 
     /* --- Vista Geometry Dash --- */
-    #gd-view { display: none; width: 100vw; height: 100vh; background: #07090e; flex-direction: column; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; z-index: 9999; }
+    #gd-view { display: none; width: 100vw; height: 100vh; background: #07090e; flex-direction: column; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; z-index: 9999; font-family: sans-serif; }
     #gd-nav { display: flex; gap: 10px; margin-bottom: 10px; }
     .nav-btn { background: #21262d; border: 1px solid #30363d; color: #fff; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; }
     .nav-btn.active { background: #1f6feb; border-color: #58a6ff; }
@@ -46,15 +51,17 @@
     #editor-toolbar { display: none; width: 850px; background: #161b22; border: 1px solid #30363d; border-top: none; padding: 8px; gap: 5px; flex-wrap: wrap; align-items: center; justify-content: center; }
     .tool-btn { background: #21262d; border: 1px solid #30363d; color: #fff; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; }
     .tool-btn.selected { border-color: #00f0ff; background: #0d1117; box-shadow: 0 0 5px #00f0ff; }
+    .cam-btn { background: #1f6feb; border-color: #58a6ff; font-weight: bold; }
     .color-picker { width: 28px; height: 24px; padding: 0; border: none; cursor: pointer; }
   </style>
 </head>
-<body>
+<body class="square-font">
 
+  <!-- Vista Classroom -->
   <div id="classroom-view">
     <header>
       <div class="logo-container">
-        <img src="https://ssl.gstatic.com/classroom/favicon.png" alt="Classroom">
+        <img src="https://ssl.gstatic.com/classroom/favicon.png" alt="Classroom Icon">
         <h1>Ayuda de Google Classroom</h1>
       </div>
     </header>
@@ -67,13 +74,83 @@
           <li>Cuenta personal de Google</li>
           <li>Cuenta de Google Workspace</li>
         </ul>
+        
         <div class="note-box">
-          <p><strong>Nota:</strong> Los padres, madres y tutores no pueden acceder a la aplicación Classroom ni a las tareas de sus hijos debido a las leyes de privacidad.</p>
+          <p><strong>Nota:</strong> Los padres, madres y tutores no pueden acceder a la aplicación Classroom ni a las tareas de sus hijos debido a las leyes de privacidad. Solo pueden recibir comunicaciones periódicas si el profesor lo permite. Consulta más información en el artículo Información sobre las comunicaciones periódicas para padres, madres o tutores.</p>
         </div>
+
+        <h2>Iniciar sesión</h2>
+        <p>Para iniciar sesión debes tener una conexión a Internet activa. Si ya sabes cómo iniciar sesión en Classroom, ve a classroom.google.com. De lo contrario, sigue los pasos detallados que explicamos a continuación.</p>
+
+        <h3>Iniciar sesión por primera vez</h3>
+        <ol>
+          <li>Ve a classroom.google.com.</li>
+          <li>Haz clic en Ir a Classroom.</li>
+          <li>Escribe la dirección de correo de tu cuenta de Classroom.</li>
+          <li>Haz clic en Siguiente.</li>
+          <li>Introduce tu contraseña.</li>
+          <li>Haz clic en Siguiente.</li>
+          <li>Si hay un mensaje de bienvenida, revísalo.</li>
+          <li>Haz clic en Aceptar.</li>
+          <li>Si utilizas una cuenta de Google Workspace for Education, haz clic en Soy alumno o Soy profesor.</li>
+        </ol>
+
+        <div class="note-box">
+          <p><strong>Nota:</strong> Los usuarios con cuentas personales de Google no verán esta opción.</p>
+        </div>
+        <p>Haz clic en Empezar.</p>
+
+        <h3>Cambiar de cuenta</h3>
+        <p>Si has iniciado sesión en varias cuentas y necesitas cambiar a la que utilizas con Classroom, haz lo siguiente:</p>
+        <ol>
+          <li>En la parte superior, haz clic en tu imagen de perfil o tu inicial.</li>
+          <li>Selecciona la cuenta.</li>
+        </ol>
+        <p>Si necesitas iniciar sesión con una cuenta de usuario diferente, consulta el artículo Iniciar sesión en varias cuentas a la vez.</p>
+
+        <h3>Obtener ayuda con mensajes de error específicos</h3>
+        <ul>
+          <li>Tu administrador no ha activado Classroom.</li>
+          <li>Este servicio ha sido desactivado por tu administrador.</li>
+          <li>No puedes usar Classroom con esta cuenta.</li>
+        </ul>
+        <p>¿Ha activado tu administrador Classroom? Para utilizar Classroom, pide al administrador de TI o de Google Workspace que active Classroom en tu centro educativo.</p>
+
+        <h3>Acceder a otras áreas de Classroom</h3>
+        <p>Ve al menú para acceder a las siguientes áreas:</p>
+        <ul>
+          <li><strong>Inicio:</strong> desplázate hasta tus clases.</li>
+          <li><strong>Calendario:</strong> consulta las fechas de entrega y accede a distintos elementos.</li>
+          <li><strong>Tareas pendientes:</strong> revisa los trabajos de tus clases.</li>
+          <li><strong>Ajustes:</strong> cambia la foto de perfil, la contraseña y las notificaciones.</li>
+        </ul>
+
+        <div class="note-box">
+          <p><strong>Nota:</strong> Para minimizar el menú hasta que se muestre una versión contraída, arriba a la izquierda, haz clic en Menú.</p>
+        </div>
+
+        <h3>Empezar a usar Classroom</h3>
+        <p>Si eres profesor, puedes crear una clase. Si eres alumno, puedes apuntarte a una clase.</p>
+
+        <h3>Recursos relacionados</h3>
+        <ul>
+          <li>Información sobre las cuentas de usuario de Classroom</li>
+          <li>Cambiar la función asignada</li>
+          <li>Unirse a una clase con un código de clase en Google Classroom</li>
+          <li>Unirse a una clase de Google Classroom con una invitación por correo</li>
+          <li>Unirse a una clase con un enlace de clase en Google Classroom</li>
+          <li>Solución de problemas (instrucciones para alumnos)</li>
+          <li>¿Cómo puedo cerrar sesión en Google Classroom?</li>
+          <li>Iniciar sesión en varias cuentas a la vez</li>
+          <li>Comunidad de ayuda de Google Classroom</li>
+        </ul>
+
+        <p style="font-size:12px; color:#70757a; margin-top:24px;">Esta página puede incluir contenido traducido con tecnología de IA. Las traducciones generadas por IA pueden contener errores.</p>
       </article>
     </main>
   </div>
 
+  <!-- Vista Geometry Dash -->
   <div id="gd-view">
     <div id="gd-nav">
       <button class="nav-btn active" id="btn-builtin" onclick="switchSubMode('builtin')">Nivel Oficial</button>
@@ -90,6 +167,7 @@
 
     <canvas id="gameCanvas" width="850" height="420"></canvas>
 
+    <!-- Menú de Niveles -->
     <div id="level-menu">
       <div class="menu-header">
         <h3>Niveles Creados</h3>
@@ -98,7 +176,10 @@
       <div class="level-list" id="custom-levels-list"></div>
     </div>
 
+    <!-- Barra del Editor -->
     <div id="editor-toolbar">
+      <button class="tool-btn cam-btn" onclick="moveCamera(-120)">◄ Cam</button>
+      <button class="tool-btn cam-btn" onclick="moveCamera(120)">Cam ►</button>
       <button class="tool-btn selected" onclick="selectTool('block', event)">Bloque</button>
       <button class="tool-btn" onclick="selectTool('spike', event)">Pincho</button>
       <button class="tool-btn" onclick="selectTool('pad_yellow', event)">Pad Am</button>
@@ -115,7 +196,6 @@
       <button class="tool-btn" onclick="selectTool('trigger_color', event)">Trigger Color</button>
       <input type="color" id="trigger-color-input" class="color-picker" value="#ff0000">
       <button class="tool-btn" onclick="selectTool('eraser', event)" style="color:#ff6666;">Borrar</button>
-      <span style="color:#aaa; font-size:11px; margin-left:5px;">Mover: ◄ ►</span>
       <button class="btn-action btn-play" onclick="saveLevel()">Guardar</button>
     </div>
   </div>
@@ -140,7 +220,7 @@
     const ctx = canvas.getContext('2d');
 
     const GRID_SIZE = 30;
-    const GROUND_Y = 330; // Ajustado a múltiplo de 30 para perfecta alineación
+    const GROUND_Y = 330; // Múltiplo exacto de 30 para encajar perfectamente la rejilla
     const CEILING_Y = 30;
     let LEVEL_LENGTH = 14000;
 
@@ -167,7 +247,7 @@
       { name: "6. Demonio", color: "#ef4444", bg: "#1f0303", endX: 14000 }
     ];
 
-    // --- TECLA H (Captura aislada) ---
+    // --- TECLA H ---
     window.addEventListener('keydown', (e) => {
       if (e.code === 'KeyH') {
         e.preventDefault();
@@ -194,13 +274,13 @@
       }
     }
 
-    // --- CONTROLES DE JUEGO ---
+    // --- CONTROLES DE TECLADO ---
     window.addEventListener('keydown', (e) => {
       if (!gameActive || e.code === 'KeyH') return;
 
       if (subMode === 'editor') {
-        if (e.key === 'ArrowRight') cameraX += 60;
-        if (e.key === 'ArrowLeft') cameraX = Math.max(0, cameraX - 60);
+        if (e.key === 'ArrowRight') moveCamera(60);
+        if (e.key === 'ArrowLeft') moveCamera(-60);
       } else {
         if (e.code === 'Space' || e.code === 'ArrowUp') {
           if (!isHoldingInput) inputJustPressed = true;
@@ -220,6 +300,10 @@
       }
     });
     window.addEventListener('mouseup', () => { isHoldingInput = false; });
+
+    function moveCamera(amount) {
+      cameraX = Math.max(0, cameraX + amount);
+    }
 
     // --- MODOS DE NAVEGACIÓN ---
     function switchSubMode(mode) {
@@ -247,7 +331,7 @@
 
     function selectTool(tool, ev) {
       selectedTool = tool;
-      document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('selected'));
+      document.querySelectorAll('#editor-toolbar .tool-btn:not(.cam-btn)').forEach(b => b.classList.remove('selected'));
       if (ev && ev.target) ev.target.classList.add('selected');
     }
 
@@ -313,7 +397,7 @@
       renderLevelList();
     }
 
-    // --- EDITOR CON ESCALADO DE CLIC Y REJILLA PERFECTA ---
+    // --- CLIC EN EDITOR Y ENCAJE PERFECTO A REJILLA ---
     canvas.addEventListener('click', (e) => {
       if (subMode !== 'editor') return;
       const rect = canvas.getBoundingClientRect();
@@ -392,7 +476,6 @@
         if (subMode === 'builtin' || subMode === 'playing_custom') {
           player.x += currentSpeed;
 
-          // Movimiento según modo
           if (player.mode === 'cube') {
             player.vy += 0.8 * player.gravityDir;
             if (inputJustPressed && player.isGrounded) {
@@ -416,7 +499,6 @@
 
           player.y += player.vy;
 
-          // Suelo y Techo
           player.isGrounded = false;
           if (player.gravityDir === 1 && player.y >= GROUND_Y - player.size) {
             player.y = GROUND_Y - player.size;
@@ -430,7 +512,6 @@
             if (player.mode === 'wave') resetPlayer();
           }
 
-          // Rotación
           if (player.mode === 'cube') {
             if (!player.isGrounded) player.angle += 0.15 * player.gravityDir;
             else player.angle = Math.round(player.angle / (Math.PI / 2)) * (Math.PI / 2);
@@ -440,3 +521,179 @@
             player.angle += 0.1 * player.gravityDir;
           } else if (player.mode === 'wave') {
             player.angle = player.vy > 0 ? Math.PI / 4 : -Math.PI / 4;
+          }
+
+          cameraX = player.x - 120;
+
+          let pHitbox = { x: player.x + 4, y: player.y + 4, w: player.size - 8, h: player.size - 8 };
+
+          for (let obj of objects) {
+            if (obj.x > cameraX - 100 && obj.x < cameraX + 900) {
+              if (obj.type === 'block') {
+                let bBox = { x: obj.x, y: obj.y, w: obj.w, h: obj.h };
+                if (pHitbox.x < bBox.x + bBox.w && pHitbox.x + pHitbox.w > bBox.x &&
+                    pHitbox.y < bBox.y + bBox.h && pHitbox.y + pHitbox.h > bBox.y) {
+                  if (player.mode !== 'wave' && player.vy * player.gravityDir >= 0 && Math.abs((player.y + (player.gravityDir === 1 ? player.size : 0)) - (player.gravityDir === 1 ? obj.y : obj.y + obj.h)) < 16) {
+                    player.y = player.gravityDir === 1 ? obj.y - player.size : obj.y + obj.h;
+                    player.vy = 0;
+                    player.isGrounded = true;
+                  } else {
+                    resetPlayer();
+                    break;
+                  }
+                }
+              } else if (obj.type === 'spike') {
+                let sHitbox = { x: obj.x + 7, y: obj.y + 8, w: obj.w - 14, h: obj.h - 10 };
+                if (pHitbox.x < sHitbox.x + sHitbox.w && pHitbox.x + pHitbox.w > sHitbox.x &&
+                    pHitbox.y < sHitbox.y + sHitbox.h && pHitbox.y + pHitbox.h > sHitbox.y) {
+                  resetPlayer();
+                  break;
+                }
+              } else if (obj.type.startsWith('orb')) {
+                let dist = Math.hypot((player.x + player.size/2) - obj.x, (player.y + player.size/2) - obj.y);
+                if (dist < obj.r + 15 && inputJustPressed) {
+                  if (obj.type === 'orb_yellow') player.vy = -12 * player.gravityDir;
+                  inputJustPressed = false;
+                }
+              } else if (obj.type.startsWith('pad')) {
+                if (pHitbox.x < obj.x + obj.w && pHitbox.x + pHitbox.w > obj.x && pHitbox.y + pHitbox.h >= obj.y) {
+                  if (obj.type === 'pad_yellow') player.vy = -14 * player.gravityDir;
+                }
+              } else if (obj.type.startsWith('portal')) {
+                if (Math.abs(player.x - obj.x) < 20) {
+                  if (obj.type === 'portal_ship') player.mode = 'ship';
+                  if (obj.type === 'portal_cube') player.mode = 'cube';
+                  if (obj.type === 'portal_ball') player.mode = 'ball';
+                  if (obj.type === 'portal_wave') player.mode = 'wave';
+                  if (obj.type === 'portal_grav_blue') player.gravityDir = -1;
+                  if (obj.type === 'portal_grav_yellow') player.gravityDir = 1;
+                }
+              } else if (obj.type.startsWith('speed')) {
+                if (Math.abs(player.x - obj.x) < 20) {
+                  if (obj.type === 'speed_slow') speedMult = 0.6;
+                  if (obj.type === 'speed_normal') speedMult = 1.0;
+                  if (obj.type === 'speed_fast') speedMult = 1.6;
+                }
+              } else if (obj.type === 'trigger_color') {
+                if (player.x >= obj.x) activeBgColor = obj.color;
+              }
+            }
+          }
+          inputJustPressed = false;
+        }
+
+        // Renderizado
+        let progress = Math.min(100, Math.floor((player.x / LEVEL_LENGTH) * 100));
+        document.getElementById('progress-text').innerText = `${progress}%`;
+        document.getElementById('mode-text').innerText = player.mode.toUpperCase();
+        document.getElementById('speed-text').innerText = `${speedMult}x`;
+
+        if (subMode === 'builtin') {
+          let currentDiff = builtinDifficulties.find(d => player.x < d.endX) || builtinDifficulties[5];
+          let diffEl = document.getElementById('diff-text');
+          diffEl.innerText = currentDiff.name;
+          diffEl.style.backgroundColor = currentDiff.color;
+          ctx.fillStyle = currentDiff.bg;
+        } else {
+          let diffEl = document.getElementById('diff-text');
+          diffEl.innerText = subMode === 'editor' ? 'EDITOR' : 'CUSTOM';
+          diffEl.style.backgroundColor = '#1f6feb';
+          ctx.fillStyle = activeBgColor;
+        }
+
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Renderizado de Rejilla perfectamente alineada con GROUND_Y
+        if (subMode === 'editor') {
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+          ctx.lineWidth = 1;
+
+          let offsetX = cameraX % GRID_SIZE;
+          for (let x = -offsetX; x <= canvas.width; x += GRID_SIZE) {
+            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+          }
+
+          for (let y = GROUND_Y; y >= 0; y -= GRID_SIZE) {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+          }
+          for (let y = GROUND_Y + GRID_SIZE; y <= canvas.height; y += GRID_SIZE) {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+          }
+        }
+
+        // Suelo y Techo
+        ctx.fillStyle = "#161b22";
+        ctx.fillRect(0, GROUND_Y, canvas.width, canvas.height - GROUND_Y);
+        ctx.fillRect(0, 0, canvas.width, CEILING_Y);
+        ctx.strokeStyle = "#30363d";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, GROUND_Y); ctx.lineTo(canvas.width, GROUND_Y);
+        ctx.moveTo(0, CEILING_Y); ctx.lineTo(canvas.width, CEILING_Y);
+        ctx.stroke();
+
+        // Objetos
+        for (let obj of objects) {
+          let dx = obj.x - cameraX;
+          if (dx > -60 && dx < 900) {
+            if (obj.type === 'spike') {
+              ctx.fillStyle = "#ff4444";
+              ctx.beginPath();
+              ctx.moveTo(dx, obj.y + obj.h); ctx.lineTo(dx + obj.w / 2, obj.y); ctx.lineTo(dx + obj.w, obj.y + obj.h);
+              ctx.closePath(); ctx.fill(); ctx.strokeStyle = "#fff"; ctx.stroke();
+            } else if (obj.type === 'block') {
+              ctx.fillStyle = "#21262d"; ctx.fillRect(dx, obj.y, obj.w, obj.h);
+              ctx.strokeStyle = "#8b949e"; ctx.strokeRect(dx, obj.y, obj.w, obj.h);
+            } else if (obj.type.startsWith('orb')) {
+              ctx.fillStyle = "#ffd700";
+              ctx.beginPath(); ctx.arc(dx, obj.y, obj.r, 0, Math.PI * 2); ctx.fill();
+              ctx.strokeStyle = "#fff"; ctx.stroke();
+            } else if (obj.type.startsWith('pad')) {
+              ctx.fillStyle = "#ffd700";
+              ctx.fillRect(dx, obj.y, obj.w, obj.h);
+            } else if (obj.type.startsWith('portal')) {
+              ctx.fillStyle = obj.type.includes('ship') ? "#00ffcc" : 
+                              obj.type.includes('ball') ? "#ff8800" :
+                              obj.type.includes('wave') ? "#00ffff" :
+                              obj.type.includes('cube') ? "#0099ff" : "#a855f7";
+              ctx.fillRect(dx, obj.y, obj.w, obj.h);
+            } else if (obj.type.startsWith('speed')) {
+              ctx.fillStyle = obj.type.includes('slow') ? "#888888" :
+                              obj.type.includes('normal') ? "#33cc33" : "#ff3333";
+              ctx.fillRect(dx, obj.y, obj.w, obj.h);
+            } else if (obj.type === 'trigger_color') {
+              ctx.fillStyle = obj.color || '#ff0000';
+              ctx.fillRect(dx, obj.y, obj.w, obj.h);
+              ctx.strokeStyle = '#fff'; ctx.strokeRect(dx, obj.y, obj.w, obj.h);
+            }
+          }
+        }
+
+        // Jugador
+        if (subMode !== 'editor') {
+          ctx.save();
+          ctx.translate(player.x - cameraX + player.size / 2, player.y + player.size / 2);
+          ctx.rotate(player.angle);
+
+          if (player.mode === 'cube') {
+            ctx.fillStyle = "#00f0ff"; ctx.fillRect(-player.size/2, -player.size/2, player.size, player.size);
+            ctx.strokeStyle = "#000"; ctx.lineWidth = 2; ctx.strokeRect(-player.size/2, -player.size/2, player.size, player.size);
+          } else if (player.mode === 'ship') {
+            ctx.fillStyle = "#ff0055";
+            ctx.beginPath(); ctx.moveTo(-15, 10); ctx.lineTo(15, 0); ctx.lineTo(-15, -10); ctx.closePath(); ctx.fill();
+          } else if (player.mode === 'ball') {
+            ctx.fillStyle = "#ffcc00"; ctx.beginPath(); ctx.arc(0, 0, player.size/2, 0, Math.PI*2); ctx.fill();
+            ctx.strokeStyle = "#000"; ctx.stroke();
+          } else if (player.mode === 'wave') {
+            ctx.fillStyle = "#00ffff";
+            ctx.beginPath(); ctx.moveTo(-12, 10); ctx.lineTo(12, 0); ctx.lineTo(-12, -10); ctx.closePath(); ctx.fill();
+          }
+          ctx.restore();
+        }
+
+        animFrameId = requestAnimationFrame(gameLoop);
+      }
+    }
+  </script>
+</body>
+</html>
