@@ -243,6 +243,8 @@
           <input id="box-search-id" class="online-input" placeholder="ID de caja">
           <button class="btn-action btn-play" onclick="searchLocalBox()">Buscar</button>
           <button class="btn-action btn-edit" onclick="createLocalBox()">Crear caja</button>
+          <button class="btn-action" onclick="loadBoxFromDevice()">Cargar desde dispositivo</button>
+          <input id="cubesoft-box-file-input" type="file" accept=".json,application/json" style="display:none" onchange="handleBoxFile(event)">
         </div>
         <div id="online-box-list" class="online-list"></div>
       </div>
@@ -464,77 +466,89 @@
     const LOCAL_CUBESOFT_BOXES_KEY = 'cubesoft_local_boxes_v1';
     const LOCAL_CUBESOFT_WEEK_KEY = 'cubesoft_local_week_v1';
 
-    const CUBESOFT_INITIAL_LEVELS = [
-      { name: "Cube Rush", description: "Corre y salta entre bloques a toda velocidad.", objects: [
-        {type:'block',x:600,y:GROUND_Y-60,w:90,h:60},
-        {type:'spike',x:900,y:GROUND_Y-30,w:30,h:30},
-        {type:'pad_yellow',x:1200,y:GROUND_Y-8,w:30,h:8},
-        {type:'block',x:1500,y:GROUND_Y-90,w:90,h:90}
-      ]},
-      { name: "Neon Steps", description: "Una carrera de precisión con plataformas.", objects: [
-        {type:'block',x:500,y:GROUND_Y-60,w:90,h:60},
-        {type:'block',x:800,y:GROUND_Y-120,w:90,h:120},
-        {type:'spike',x:1100,y:GROUND_Y-30,w:30,h:30},
-        {type:'orb_yellow',x:1350,y:GROUND_Y-90,r:14}
-      ]},
-      { name: "Sky Blocks", description: "Sube por una torre de plataformas.", objects: [
-        {type:'block',x:600,y:GROUND_Y-60,w:90,h:60},
-        {type:'block',x:900,y:GROUND_Y-120,w:90,h:120},
-        {type:'block',x:1200,y:GROUND_Y-180,w:90,h:180},
-        {type:'spike',x:1500,y:GROUND_Y-30,w:30,h:30}
-      ]},
-      { name: "Spike Valley", description: "Cruza el valle evitando los pinchos.", objects: [
-        {type:'spike',x:500,y:GROUND_Y-30,w:30,h:30},
-        {type:'spike',x:650,y:GROUND_Y-30,w:30,h:30},
-        {type:'block',x:900,y:GROUND_Y-60,w:120,h:60},
-        {type:'spike',x:1250,y:GROUND_Y-30,w:30,h:30},
-        {type:'spike',x:1400,y:GROUND_Y-30,w:30,h:30}
-      ]},
-      { name: "Gravity Flip", description: "Usa el cambio de gravedad para avanzar.", objects: [
-        {type:'portal_grav_blue',x:700,y:GROUND_Y-150,w:30,h:90},
-        {type:'spike',x:1000,y:CEILING_Y,w:30,h:30},
-        {type:'portal_grav_yellow',x:1350,y:GROUND_Y-150,w:30,h:90},
-        {type:'block',x:1650,y:GROUND_Y-60,w:90,h:60}
-      ]},
-      { name: "Tiny Wave", description: "Una pequeña prueba en modo Wave.", objects: [
-        {type:'portal_wave',x:500,y:GROUND_Y-150,w:30,h:90},
-        {type:'block',x:850,y:GROUND_Y-90,w:120,h:90},
-        {type:'block',x:1200,y:CEILING_Y,w:120,h:90},
-        {type:'portal_cube',x:1650,y:GROUND_Y-150,w:30,h:90}
-      ]},
-      { name: "Speed Factory", description: "Cambia la velocidad en el momento correcto.", objects: [
-        {type:'speed_fast',x:550,y:GROUND_Y-90,w:30,h:60},
-        {type:'block',x:850,y:GROUND_Y-60,w:120,h:60},
-        {type:'speed_slow',x:1200,y:GROUND_Y-90,w:30,h:60},
-        {type:'spike',x:1500,y:GROUND_Y-30,w:30,h:30}
-      ]},
-      { name: "Orb Garden", description: "Salta usando orbes amarillos.", objects: [
-        {type:'orb_yellow',x:650,y:GROUND_Y-100,r:14},
-        {type:'spike',x:900,y:GROUND_Y-30,w:30,h:30},
-        {type:'orb_yellow',x:1150,y:GROUND_Y-100,r:14},
-        {type:'block',x:1450,y:GROUND_Y-90,w:90,h:90}
-      ]},
-      { name: "Portal Lab", description: "Prueba distintos portales de modo.", objects: [
-        {type:'portal_ship',x:500,y:GROUND_Y-150,w:30,h:90},
-        {type:'portal_ball',x:900,y:GROUND_Y-150,w:30,h:90},
-        {type:'portal_cube',x:1300,y:GROUND_Y-150,w:30,h:90},
-        {type:'portal_wave',x:1700,y:GROUND_Y-150,w:30,h:90}
-      ]},
-      { name: "CubeSoft Classic", description: "La prueba clásica de CubeSoft.", objects: [
-        {type:'block',x:550,y:GROUND_Y-60,w:90,h:60},
-        {type:'spike',x:850,y:GROUND_Y-30,w:30,h:30},
-        {type:'pad_yellow',x:1100,y:GROUND_Y-8,w:30,h:8},
-        {type:'block',x:1400,y:GROUND_Y-120,w:120,h:120},
-        {type:'spike',x:1800,y:GROUND_Y-30,w:30,h:30}
-      ]}
+    // 30 niveles nuevos de CubeSoft: 10 iniciales + 20 semanales.
+    const CUBESOFT_LEVEL_NAMES = [
+      "CubeSoft 01: First Steps","CubeSoft 02: Block Highway","CubeSoft 03: Neon Factory",
+      "CubeSoft 04: Spike Valley","CubeSoft 05: Gravity Station","CubeSoft 06: Sky Fortress",
+      "CubeSoft 07: Portal Complex","CubeSoft 08: Speed Reactor","CubeSoft 09: Orb Laboratory",
+      "CubeSoft 10: The Long Road","CubeSoft 11: Crystal Tunnel","CubeSoft 12: Mechanical City",
+      "CubeSoft 13: Gravity Maze","CubeSoft 14: Red Canyon","CubeSoft 15: Sky Factory",
+      "CubeSoft 16: Portal Storm","CubeSoft 17: Impossible Highway","CubeSoft 18: Deep Machine",
+      "CubeSoft 19: Final Fortress","CubeSoft 20: Endless Reactor","CubeSoft 21: Dark Highway",
+      "CubeSoft 22: Mega Factory","CubeSoft 23: Gravity World","CubeSoft 24: Giant Canyon",
+      "CubeSoft 25: Portal Kingdom","CubeSoft 26: Hyper Reactor","CubeSoft 27: The Gauntlet",
+      "CubeSoft 28: Machine Core","CubeSoft 29: Final Highway","CubeSoft 30: CubeSoft Finale"
     ];
 
-    const CUBESOFT_RESERVE_NAMES = [
-      "Block Party", "Mini Factory", "Pixel Road", "Blue Gravity", "Jump Street",
-      "Little Demon", "Green Machine", "Portal Run", "Sky Road", "Fast Lane",
-      "Tiny Castle", "Spike Works", "Cube Valley", "Orb Station", "Wave Tunnel",
-      "Gravity Room", "Classic Run", "Block Canyon", "Speed Zone", "Final Cube"
-    ];
+    function makeCubeSoftLevel(index) {
+      const objects = [];
+      const length = 6000 + index * 120;
+      const patterns = [
+        ['block','spike','block','orb_yellow','spike'],
+        ['spike','spike','block','pad_yellow','orb_yellow'],
+        ['block','block','spike','portal_grav_blue','spike'],
+        ['orb_yellow','spike','portal_wave','block','spike'],
+        ['portal_ship','block','spike','orb_yellow','block'],
+        ['portal_ball','spike','block','portal_cube','spike'],
+        ['block','spike','pad_yellow','block','orb_yellow']
+      ];
+      const pattern = patterns[index % patterns.length];
+
+      for (let x = 400, step = 0; x < length; x += 145, step++) {
+        const type = pattern[step % pattern.length];
+
+        if (type === 'block') {
+          const height = 45 + ((step * 37 + index * 19) % 120);
+          objects.push({type:'block', x:x, y:GROUND_Y-height, w:90+(step%3)*25, h:height});
+        } else if (type === 'spike') {
+          objects.push({type:'spike', x:x, y:GROUND_Y-30, w:30, h:30});
+          if ((step+index)%6===0) objects.push({type:'spike',x:x+42,y:GROUND_Y-30,w:30,h:30});
+        } else if (type === 'orb_yellow') {
+          objects.push({type:'orb_yellow',x:x+30,y:GROUND_Y-100-((step*17)%75),r:14});
+        } else if (type === 'pad_yellow') {
+          objects.push({type:'pad_yellow',x:x,y:GROUND_Y-8,w:30,h:8});
+          objects.push({type:'spike',x:x+75,y:GROUND_Y-30,w:30,h:30});
+        } else if (type === 'portal_grav_blue') {
+          objects.push({type:'portal_grav_blue',x:x,y:GROUND_Y-150,w:30,h:90});
+          objects.push({type:'spike',x:x+90,y:CEILING_Y,w:30,h:30});
+          objects.push({type:'block',x:x+145,y:GROUND_Y-95,w:110,h:95});
+        } else if (type === 'portal_wave') {
+          objects.push({type:'portal_wave',x:x,y:GROUND_Y-150,w:30,h:90});
+          objects.push({type:'block',x:x+100,y:GROUND_Y-120,w:130,h:120});
+          objects.push({type:'block',x:x+300,y:CEILING_Y,w:130,h:90});
+          objects.push({type:'spike',x:x+500,y:GROUND_Y-30,w:30,h:30});
+        } else if (type === 'portal_ship') {
+          objects.push({type:'portal_ship',x:x,y:GROUND_Y-150,w:30,h:90});
+          objects.push({type:'block',x:x+120,y:GROUND_Y-170,w:100,h:170});
+          objects.push({type:'block',x:x+300,y:CEILING_Y,w:100,h:130});
+        } else if (type === 'portal_ball') {
+          objects.push({type:'portal_ball',x:x,y:GROUND_Y-150,w:30,h:90});
+          objects.push({type:'spike',x:x+100,y:GROUND_Y-30,w:30,h:30});
+          objects.push({type:'spike',x:x+190,y:CEILING_Y,w:30,h:30});
+        } else if (type === 'portal_cube') {
+          objects.push({type:'portal_cube',x:x,y:GROUND_Y-150,w:30,h:90});
+          objects.push({type:'block',x:x+100,y:GROUND_Y-70,w:100,h:70});
+        }
+
+        if ((step+index)%9===0) objects.push({type:'orb_yellow',x:x+65,y:GROUND_Y-155,r:14});
+        if ((step*3+index)%13===0) objects.push({type:'spike',x:x+55,y:GROUND_Y-30,w:30,h:30});
+      }
+
+      objects.push({type:'block',x:length-500,y:GROUND_Y-100,w:140,h:100});
+      objects.push({type:'spike',x:length-300,y:GROUND_Y-30,w:30,h:30});
+      objects.push({type:'spike',x:length-255,y:GROUND_Y-30,w:30,h:30});
+      objects.push({type:'block',x:length-80,y:GROUND_Y-60,w:80,h:60});
+
+      return {
+        name: CUBESOFT_LEVEL_NAMES[index],
+        description: "Nivel largo y complejo · " + Math.round(length/100) + "0 unidades",
+        objects: objects
+      };
+    }
+
+    const CUBESOFT_INITIAL_LEVELS = Array.from({length:10}, (_,i) => makeCubeSoftLevel(i));
+
+    const CUBESOFT_RESERVE_NAMES = CUBESOFT_LEVEL_NAMES.slice(10);
 
     function cloneLevelData(level) {
       return JSON.parse(JSON.stringify({
@@ -549,26 +563,21 @@
       try { levels = JSON.parse(localStorage.getItem(LOCAL_CUBESOFT_LEVELS_KEY) || 'null'); }
       catch(e) { levels = null; }
 
-      if (!Array.isArray(levels) || levels.length < 10) {
+      // Se elimina la colección anterior y se instala la nueva.
+      if (!Array.isArray(levels) || levels.length === 0 ||
+          !String(levels[0].name || '').startsWith('CubeSoft 01:')) {
         levels = CUBESOFT_INITIAL_LEVELS.map(cloneLevelData);
-        localStorage.setItem(LOCAL_CUBESOFT_LEVELS_KEY, JSON.stringify(levels));
+        localStorage.setItem(LOCAL_CUBESOFT_WEEK_KEY, String(Math.floor(Date.now() / (7*24*60*60*1000))));
       }
 
-      // Cada semana añade exactamente un nivel de la reserva de 20.
-      let currentWeek = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000));
-      let savedWeek = Number(localStorage.getItem(LOCAL_CUBESOFT_WEEK_KEY) || currentWeek);
-      if (!Number.isFinite(savedWeek)) savedWeek = currentWeek;
+      const currentWeek = Math.floor(Date.now() / (7*24*60*60*1000));
+      let lastWeek = Number(localStorage.getItem(LOCAL_CUBESOFT_WEEK_KEY));
+      if (!Number.isFinite(lastWeek)) lastWeek = currentWeek;
 
-      let weeksToAdd = Math.max(0, currentWeek - savedWeek);
-      let reserveIndex = Math.max(0, levels.length - 10);
-
-      for (let i = 0; i < weeksToAdd && reserveIndex < 20; i++) {
-        let source = CUBESOFT_INITIAL_LEVELS[(reserveIndex + i) % CUBESOFT_INITIAL_LEVELS.length];
-        levels.push({
-          name: CUBESOFT_RESERVE_NAMES[reserveIndex + i] || ("CubeSoft Extra " + (reserveIndex + i + 1)),
-          description: "Nivel añadido a la colección semanal de CubeSoft.",
-          objects: JSON.parse(JSON.stringify(source.objects))
-        });
+      // Por cada semana pasada se añade exactamente un nivel, hasta llegar a 30.
+      const weeksPassed = Math.max(0, currentWeek - lastWeek);
+      for (let i=0; i<weeksPassed && levels.length<30; i++) {
+        levels.push(makeCubeSoftLevel(levels.length));
       }
 
       localStorage.setItem(LOCAL_CUBESOFT_LEVELS_KEY, JSON.stringify(levels));
@@ -716,13 +725,25 @@
         info.appendChild(title);
         info.appendChild(details);
 
+        const actions = document.createElement('div');
+        actions.style.display = 'flex';
+        actions.style.gap = '6px';
+        actions.style.flexWrap = 'wrap';
+
         const button = document.createElement('button');
         button.className = 'btn-action btn-play';
         button.textContent = 'Recibir niveles';
         button.onclick = () => receiveLocalBox(box.id);
 
+        const download = document.createElement('button');
+        download.className = 'btn-action';
+        download.textContent = 'Descargar';
+        download.onclick = () => downloadLocalBox(box.id);
+
+        actions.appendChild(button);
+        actions.appendChild(download);
         item.appendChild(info);
-        item.appendChild(button);
+        item.appendChild(actions);
         list.appendChild(item);
       });
     }
@@ -754,13 +775,24 @@
       info.appendChild(title);
       info.appendChild(details);
 
+      const actions = document.createElement('div');
+      actions.style.display = 'flex';
+      actions.style.gap = '6px';
+
       const button = document.createElement('button');
       button.className = 'btn-action btn-play';
       button.textContent = 'Recibir niveles';
       button.onclick = () => receiveLocalBox(box.id);
 
+      const download = document.createElement('button');
+      download.className = 'btn-action';
+      download.textContent = 'Descargar';
+      download.onclick = () => downloadLocalBox(box.id);
+
+      actions.appendChild(button);
+      actions.appendChild(download);
       item.appendChild(info);
-      item.appendChild(button);
+      item.appendChild(actions);
       list.appendChild(item);
     }
 
@@ -781,6 +813,70 @@
 
       saveToStorage();
       alert(received + " nivel(es) recibidos y guardados en Mis Niveles.");
+    }
+
+    function downloadLocalBox(id) {
+      const box = getLocalBoxes().find(b => b.id === id);
+      if (!box) return alert("Caja no encontrada.");
+
+      const data = {
+        format: "CubeSoftBox",
+        version: 1,
+        id: box.id,
+        levels: (box.levels || []).map(cloneLevelData),
+        createdAt: box.createdAt || Date.now()
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "CubeSoft_Box_" + box.id + ".json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function loadBoxFromDevice() {
+      const input = document.getElementById("cubesoft-box-file-input");
+      if (input) {
+        input.value = "";
+        input.click();
+      }
+    }
+
+    function handleBoxFile(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function() {
+        try {
+          const data = JSON.parse(reader.result);
+          if (!data || data.format !== "CubeSoftBox" ||
+              !Array.isArray(data.levels) || data.levels.length > 2) {
+            throw new Error("Formato inválido");
+          }
+
+          const boxes = getLocalBoxes();
+          let id = String(data.id || generateBoxId(boxes));
+          if (boxes.some(b => b.id === id)) id = generateBoxId(boxes);
+
+          boxes.push({
+            id: id,
+            levels: data.levels.slice(0,2).map(cloneLevelData),
+            createdAt: data.createdAt || Date.now()
+          });
+
+          saveLocalBoxes(boxes);
+          renderLocalBoxes();
+          alert("Caja cargada correctamente.\nID: " + id);
+        } catch(e) {
+          alert("No se pudo cargar la caja. El archivo no es una caja CubeSoft válida.");
+        }
+      };
+      reader.readAsText(file);
     }
 
     function openOnlineSection(section) {
