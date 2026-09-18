@@ -8,7 +8,7 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
-    /* --- Vista Google Classroom --- */
+    /* --- Vista Google Classroom con tipografía por defecto --- */
     body, html { width: 100%; height: 100%; overflow-x: hidden; background-color: #ffffff; color: #202124; user-select: none; font-family: 'Google Sans', Roboto, Arial, sans-serif; }
 
     #classroom-view { display: block; width: 100%; min-height: 100vh; }
@@ -29,57 +29,27 @@
 
     /* --- Vista Geometry Dash --- */
     #gd-view { display: none; width: 100vw; height: 100vh; background: #07090e; flex-direction: column; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; z-index: 9999; font-family: sans-serif; }
-    #gd-nav { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; justify-content: center; align-items: center; }
-    .nav-btn { background: #21262d; border: 1px solid #30363d; color: #fff; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; }
+    #gd-nav { display: flex; gap: 10px; margin-bottom: 10px; }
+    .nav-btn { background: #21262d; border: 1px solid #30363d; color: #fff; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; }
     .nav-btn.active { background: #1f6feb; border-color: #58a6ff; }
     #gd-header { color: #fff; font-size: 13px; margin-bottom: 8px; display: flex; gap: 16px; font-weight: bold; text-transform: uppercase; }
     .hud-badge { padding: 4px 10px; border-radius: 4px; font-size: 11px; color: #fff; background: #222; }
     canvas { background: #0d1117; border: 2px solid #30363d; border-radius: 6px; cursor: crosshair; }
 
-    /* --- Botón Estilo DS de Red --- */
-    .ds-wifi-btn {
-      background: linear-gradient(to bottom, #d1d5db, #9ca3af);
-      border: 1px solid #4b5539;
-      color: #1f2937;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 3px rgba(0,0,0,0.4);
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .ds-wifi-btn:active { background: linear-gradient(to bottom, #9ca3af, #6b7280); box-shadow: inset 0 1px 2px rgba(0,0,0,0.5); }
 
-    /* --- Modal Estilo DS Config --- */
-    #ds-modal {
-      display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.7); z-index: 10000; align-items: center; justify-content: center;
-    }
-    .ds-modal-box {
-      background: #e5e7eb; border: 4px solid #9ca3af; border-radius: 12px;
-      width: 420px; padding: 20px; color: #111827; font-family: sans-serif;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.6); text-align: center;
-    }
-    .ds-modal-box h3 { margin-bottom: 10px; color: #1e3a8a; font-size: 18px; }
-    .ds-modal-box p { font-size: 13px; line-height: 1.5; margin-bottom: 20px; color: #374151; }
-
-    /* --- Centro de Distribución / CubeSoft --- */
+    /* --- Online / CubeSoft (modo local mientras no haya servidor) --- */
     #online-menu {
       display: none; width: 850px; height: 420px; background: #161b22;
       border: 2px solid #30363d; border-radius: 6px; padding: 20px;
-      color: white; flex-direction: column; position: relative;
+      color: white; flex-direction: column;
     }
-    .online-topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .online-home { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; flex: 1; }
     .online-card {
       background: #21262d; border: 1px solid #30363d; border-radius: 8px;
-      padding: 20px; cursor: pointer; transition: .15s; display: flex; flex-direction: column; justify-content: center;
+      padding: 20px; cursor: pointer; transition: .15s;
     }
     .online-card:hover { border-color: #58a6ff; transform: translateY(-1px); }
-    .online-card h4 { font-size: 18px; margin-bottom: 8px; color: #58a6ff; }
+    .online-card h4 { font-size: 19px; margin-bottom: 9px; }
     .online-card p { color: #b1bac4; font-size: 13px; line-height: 1.45; }
     .online-view { display: none; flex-direction: column; flex: 1; min-height: 0; }
     .online-toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
@@ -91,29 +61,26 @@
     }
     .online-item small { color: #8b949e; display: block; margin-top: 3px; }
     .online-empty { color: #8b949e; text-align: center; padding: 30px; line-height: 1.6; }
-    .online-status { font-size: 12px; padding: 4px 8px; border-radius: 4px; background: #21262d; border: 1px solid #30363d; color: #b1bac4; }
-    .online-input { background: #0d1117; color: #fff; border: 1px solid #30363d; border-radius: 5px; padding: 8px 10px; outline: none; min-width: 0; }
+    .online-status {
+      font-size: 12px; padding: 5px 8px; border-radius: 5px;
+      background: #21262d; border: 1px solid #30363d; color: #b1bac4;
+    }
+    .online-input {
+      background: #0d1117; color: #fff; border: 1px solid #30363d;
+      border-radius: 5px; padding: 8px 10px; outline: none; min-width: 0;
+    }
     .online-input:focus { border-color: #58a6ff; }
+    .box-levels { color: #8b949e; font-size: 12px; }
 
     /* --- Menú de Niveles --- */
     #level-menu { display: none; width: 850px; height: 420px; background: #161b22; border: 2px solid #30363d; border-radius: 6px; padding: 20px; color: white; flex-direction: column; }
     .menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .level-list { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
     .level-card { background: #21262d; border: 1px solid #30363d; border-radius: 6px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
-    .btn-action { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-left: 4px; font-size: 12px; }
+    .btn-action { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-left: 5px; }
     .btn-play { background: #2ea44f; color: white; }
     .btn-edit { background: #d97706; color: white; }
     .btn-delete { background: #dc2626; color: white; }
-    .btn-test { background: #8b5cf6; color: white; }
-
-    /* --- Pestaña de Dibujo --- */
-    #drawing-menu { display: none; width: 850px; height: 420px; background: #161b22; border: 2px solid #30363d; border-radius: 6px; padding: 15px; color: white; flex-direction: column; }
-    .drawing-workspace { display: flex; gap: 15px; flex: 1; min-height: 0; }
-    .drawing-tools { width: 160px; background: #21262d; border: 1px solid #30363d; border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
-    .draw-canvas-container { flex: 1; background: #0d1117; border: 2px solid #30363d; border-radius: 6px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
-    #drawingCanvas { background: #ffffff; cursor: crosshair; border-radius: 4px; }
-    .draw-tool-btn { background: #30363d; border: 1px solid #484f58; color: #fff; padding: 6px; border-radius: 4px; cursor: pointer; font-size: 11px; text-align: left; }
-    .draw-tool-btn.selected { background: #1f6feb; border-color: #58a6ff; }
 
     /* --- Editor Toolbar --- */
     #editor-toolbar { display: none; width: 850px; background: #161b22; border: 1px solid #30363d; border-top: none; padding: 8px; gap: 5px; flex-wrap: wrap; align-items: center; justify-content: center; }
@@ -125,7 +92,6 @@
 </head>
 <body>
 
-  <!-- Vista Completa de Ayuda de Google Classroom -->
   <div id="classroom-view">
     <header>
       <div class="logo-container">
@@ -136,42 +102,86 @@
     <main class="main-container">
       <article class="classroom-article">
         <h2>Iniciar sesión en Classroom</h2>
-        <p>Para usar Classroom, debes iniciar sesión en tu cuenta de Google en tu ordenador o dispositivo móvil. Dependiendo de si tu centro educativo utiliza Google Workspace for Education o si utilizas una cuenta personal, el acceso puede variar ligeramente.</p>
-
-        <h3>Tipos de cuentas admitidas</h3>
+        <p>El tipo de entorno formativo determina la cuenta con la que se inicia sesión en Classroom, que puede ser una de las siguientes:</p>
         <ul>
-          <li><strong>Cuenta de centro educativo (Google Workspace for Education):</strong> Proporcionada por el centro escolar. Tiene un formato como <code>nombre@tucolegio.edu</code>.</li>
-          <li><strong>Cuenta personal de Google:</strong> Cuenta estándar utilizada fuera del ámbito escolar, con formato <code>nombre@gmail.com</code> (disponible solo en casos específicos permitidos por el administrador).</li>
-          <li><strong>Cuenta de Google Workspace:</strong> Cuentas administradas por organizaciones y centros formativos asociados.</li>
+          <li>Cuenta de centro educativo</li>
+          <li>Cuenta personal de Google</li>
+          <li>Cuenta de Google Workspace</li>
         </ul>
         
         <div class="note-box">
-          <p><strong>Nota importante sobre la privacidad:</strong> Los padres, madres y tutores legales no pueden iniciar sesión directamente con credenciales de alumno en la aplicación Classroom ni modificar tareas debido a las normativas vigentes de protección de datos y privacidad infantil.</p>
+          <p><strong>Nota:</strong> Los padres, madres y tutores no pueden acceder a la aplicación Classroom ni a las tareas de sus hijos debido a las leyes de privacidad. Solo pueden recibir comunicaciones periódicas si el profesor lo permite. Consulta más información en el artículo Información sobre las comunicaciones periódicas para padres, madres o tutores.</p>
         </div>
 
-        <h2>Pasos para iniciar sesión por primera vez</h2>
+        <h2>Iniciar sesión</h2>
+        <p>Para iniciar sesión debes tener una conexión a Internet activa. Si ya sabes cómo iniciar sesión en Classroom, ve a classroom.google.com. De lo contrario, sigue los pasos detallados que explicamos a continuación.</p>
+
+        <h3>Iniciar sesión por primera vez</h3>
         <ol>
-          <li>Abre tu navegador web y dirígete a <a href="https://classroom.google.com" target="_blank" style="color: #1a73e8; text-decoration: none;">classroom.google.com</a>.</li>
-          <li>Haz clic en el botón de <strong>Ir a Classroom</strong>.</li>
-          <li>Introduce el correo electrónico completo de tu cuenta educativa y haz clic en <em>Siguiente</em>.</li>
-          <li>Introduce tu contraseña segura y pulsa en <em>Siguiente</em> para confirmar el acceso.</li>
-          <li>Si es la primera vez que inicias sesión, es posible que debas aceptar los términos de servicio y condiciones de privacidad establecidos por el administrador de tu institución.</li>
+          <li>Ve a classroom.google.com.</li>
+          <li>Haz clic en Ir a Classroom.</li>
+          <li>Escribe la dirección de correo de tu cuenta de Classroom.</li>
+          <li>Haz clic en Siguiente.</li>
+          <li>Introduce tu contraseña.</li>
+          <li>Haz clic en Siguiente.</li>
+          <li>Si hay un mensaje de bienvenida, revísalo.</li>
+          <li>Haz clic en Aceptar.</li>
+          <li>Si utilizas una cuenta de Google Workspace for Education, haz clic en Soy alumno o Soy profesor.</li>
         </ol>
 
-        <h3>Solución de problemas comunes</h3>
-        <p>Si experimentas errores al intentar acceder, comprueba que tu conexión a la red sea estable o ponte en contacto con el administrador de sistemas de tu centro educativo para restablecer las credenciales o verificar el estado de la suscripción de Google Workspace.</p>
-        
-        <p style="font-size:12px; color:#70757a; margin-top:32px; border-top: 1px solid #dadce0; padding-top: 12px;">Esta documentación incluye contenido oficial adaptado de los centros de ayuda globales de Google Classroom.</p>
+        <div class="note-box">
+          <p><strong>Nota:</strong> Los usuarios con cuentas personales de Google no verán esta opción.</p>
+        </div>
+        <p>Haz clic en Empezar.</p>
+
+        <h3>Cambiar de cuenta</h3>
+        <p>Si has iniciado sesión en varias cuentas y necesitas cambiar a la que utilizas con Classroom, haz lo siguiente:</p>
+        <ol>
+          <li>En la parte superior, haz clic en tu imagen de perfil o tu inicial.</li>
+          <li>Selecciona la cuenta.</li>
+        </ol>
+        <p>Si necesitas iniciar sesión con una cuenta de usuario diferente, consulta el artículo Iniciar sesión en varias cuentas a la vez.</p>
+
+        <h3>Obtener ayuda con mensajes de error específicos</h3>
+        <ul>
+          <li>Tu administrador no ha activado Classroom.</li>
+          <li>Este servicio ha sido desactivado por tu administrador.</li>
+          <li>No puedes usar Classroom con esta cuenta.</li>
+        </ul>
+        <p>¿Ha activado tu administrador Classroom? Para utilizar Classroom, pide al administrador de TI o de Google Workspace que active Classroom en tu centro educativo.</p>
+
+        <h3>Acceder a otras áreas de Classroom</h3>
+        <p>Ve al menú para acceder a las siguientes áreas:</p>
+        <ul>
+          <li><strong>Inicio:</strong> desplázate hasta tus clases.</li>
+          <li><strong>Calendario:</strong> consulta las fechas de entrega y accede a distintos elementos.</li>
+          <li><strong>Tareas pendientes:</strong> revisa los trabajos de tus clases.</li>
+          <li><strong>Ajustes:</strong> cambia la foto de perfil, la contraseña y las notificaciones.</li>
+        </ul>
+
+        <div class="note-box">
+          <p><strong>Nota:</strong> Para minimizar el menú hasta que se muestre una versión contraída, arriba a la izquierda, haz clic en Menú.</p>
+        </div>
+
+        <h3>Empezar a usar Classroom</h3>
+        <p>Si eres profesor, puedes crear una clase. Si eres alumno, puedes apuntarte a una clase.</p>
+
+        <h3>Recursos relacionados</h3>
+        <ul>
+          <li>Información sobre las cuentas de usuario de Classroom</li>
+          <li>Cambiar la función asignada</li>
+          <li>Unirse a una clase con un código de clase en Google Classroom</li>
+          <li>Unirse a una clase de Google Classroom con una invitación por correo</li>
+          <li>Unirse a una clase con un enlace de clase en Google Classroom</li>
+          <li>Solución de problemas (instrucciones para alumnos)</li>
+          <li>¿Cómo puedo cerrar sesión en Google Classroom?</li>
+          <li>Iniciar sesión en varias cuentas a la vez</li>
+          <li>Comunidad de ayuda de Google Classroom</li>
+        </ul>
+
+        <p style="font-size:12px; color:#70757a; margin-top:24px;">Esta página puede incluir contenido traducido con tecnología de IA. Las traducciones generadas por IA pueden contener errores.</p>
       </article>
     </main>
-  </div>
-
-  <div id="ds-modal">
-    <div class="ds-modal-box">
-      <h3>Configuración de Nintendo DS Wi-Fi</h3>
-      <p>No se puede realizar la configuración de red ni conectar a Internet porque aún no hay un motor de renderizado web conectado ni servidor activo.</p>
-      <button class="btn-action btn-play" onclick="closeDsModal()">Aceptar</button>
-    </div>
   </div>
 
   <div id="gd-view">
@@ -179,9 +189,7 @@
       <button class="nav-btn active" id="btn-builtin" onclick="switchSubMode('builtin')">Nivel Oficial</button>
       <button class="nav-btn" id="btn-menu" onclick="switchSubMode('menu')">Mis Niveles</button>
       <button class="nav-btn" id="btn-editor" onclick="switchSubMode('editor')">Editor</button>
-      <button class="nav-btn" id="btn-online" onclick="switchSubMode('online')">Centro de distribución</button>
-      <button class="nav-btn" id="btn-drawing" onclick="switchSubMode('drawing')">Dibujo y Encargos</button>
-      <button class="ds-wifi-btn" onclick="openDsModal()">📶 Configurar Red</button>
+      <button class="nav-btn" id="btn-online" onclick="switchSubMode('online')">Online</button>
     </div>
 
     <div id="gd-header">
@@ -201,83 +209,52 @@
       <div class="level-list" id="custom-levels-list"></div>
     </div>
 
-    <!-- Centro de Distribución (Online) -->
+
     <div id="online-menu">
-      <div class="online-topbar">
-        <h3>Centro de distribución</h3>
-        <span id="online-status" class="online-status">Modo local · Configurable por GitHub</span>
+      <div class="menu-header">
+        <h3>Online</h3>
+        <span id="online-status" class="online-status">Modo local</span>
       </div>
 
       <div id="online-home" class="online-home">
-        <div class="online-card" onclick="openOnlineSection('cubesoft')">
-          <h4>🧊 CubeSoft & Desafíos</h4>
-          <p>Cada semana hay un nuevo nivel disponible. Entra al desafío de diseño, revisa la tienda y recibe o prueba niveles exclusivos.</p>
+        <div class="online-card" onclick="openOnlineSection('shop')">
+          <h4>🧊 Tienda CubeSoft</h4>
+          <p>Niveles de CubeSoft disponibles en este dispositivo. Puedes recibirlos y guardarlos en Mis Niveles.</p>
         </div>
         <div class="online-card" onclick="openOnlineSection('boxes')">
-          <h4>📦 Cajas y Minijuegos JSON</h4>
-          <p>Descarga minijuegos y cajas en formato .json, busca cajas por ID o empaqueta tus creaciones.</p>
+          <h4>📦 Cajas</h4>
+          <p>Crea cajas locales de hasta 2 niveles, busca una caja por ID y carga sus niveles en este dispositivo.</p>
         </div>
       </div>
 
-      <!-- Sección CubeSoft -->
-      <div id="online-cubesoft-view" class="online-view">
+      <div id="online-shop-view" class="online-view">
         <div class="online-toolbar">
           <button class="btn-action" onclick="closeOnlineSection()">← Volver</button>
-          <strong>Tienda CubeSoft & Desafíos</strong>
-          <button class="btn-action btn-play" onclick="loadCubeSoftShop()">Actualizar Niveles Semanales</button>
-          <button class="btn-action btn-test" onclick="openDesignChallenge()">Desafío de Diseño</button>
+          <strong>Tienda CubeSoft</strong>
+          <button class="btn-action btn-play" onclick="loadLocalCubeSoftLevels()">Actualizar</button>
         </div>
-        <div id="cubesoft-shop-list" class="online-list"></div>
+        <div id="online-shop-list" class="online-list"></div>
       </div>
 
-      <!-- Sección Cajas y JSON -->
       <div id="online-boxes-view" class="online-view">
         <div class="online-toolbar">
           <button class="btn-action" onclick="closeOnlineSection()">← Volver</button>
-          <strong>Cajas & Minijuegos JSON</strong>
+          <strong>Cajas</strong>
           <input id="box-search-id" class="online-input" placeholder="ID de caja">
           <button class="btn-action btn-play" onclick="searchLocalBox()">Buscar</button>
           <button class="btn-action btn-edit" onclick="createLocalBox()">Crear caja</button>
-          <button class="btn-action btn-test" onclick="triggerJsonDownloadInput()">Descargar JSON</button>
-          <input id="json-file-input" type="file" accept=".json,application/json" style="display:none" onchange="handleJsonUpload(event)">
+          <button class="btn-action" onclick="loadBoxFromDevice()">Cargar desde dispositivo</button>
+          <input id="cubesoft-box-file-input" type="file" accept=".json,application/json" style="display:none" onchange="handleBoxFile(event)">
         </div>
         <div id="online-box-list" class="online-list"></div>
       </div>
     </div>
 
-    <!-- Pestaña de Dibujo y Encargos -->
-    <div id="drawing-menu">
-      <div class="menu-header">
-        <h3>Centro de Dibujo y Encargos</h3>
-        <span class="online-status">Herramientas avanzadas con plantillas</span>
-      </div>
-      <div class="drawing-workspace">
-        <div class="drawing-tools">
-          <button class="draw-tool-btn selected" onclick="setDrawTool('pencil', event)">✏️ Lápiz</button>
-          <button class="draw-tool-btn" onclick="setDrawTool('brush', event)">🖌️ Pincel grueso</button>
-          <button class="draw-tool-btn" onclick="setDrawTool('eraser', event)">🧹 Goma</button>
-          <button class="draw-tool-btn" onclick="setDrawTool('line', event)">📏 Línea recta</button>
-          <button class="draw-tool-btn" onclick="setDrawTool('rect', event)">⏹️ Rectángulo</button>
-          <label style="font-size:11px; margin-top:5px; color:#8b949e;">Color:</label>
-          <input type="color" id="draw-color" value="#00f0ff" style="width:100%; height:28px; border:none; cursor:pointer; background:none;">
-          <button class="btn-action btn-play" style="margin-top:auto;" onclick="loadDrawingTemplate()">Cargar Plantilla</button>
-          <button class="btn-action btn-delete" onclick="clearDrawingCanvas()">Limpiar</button>
-          <button class="btn-action btn-edit" onclick="saveDrawingCommission()">Guardar Encargo</button>
-        </div>
-        <div class="draw-canvas-container">
-          <canvas id="drawingCanvas" width="640" height="340"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- Editor Toolbar -->
     <div id="editor-toolbar">
       <button class="tool-btn cam-btn" onclick="moveCamera(-120)">◄ Cam</button>
       <button class="tool-btn cam-btn" onclick="moveCamera(120)">Cam ►</button>
       <button class="tool-btn selected" onclick="selectTool('block', event)">Bloque</button>
       <button class="tool-btn" onclick="selectTool('spike', event)">Pincho</button>
-      <button class="tool-btn" onclick="selectTool('spike_wide', event)">Pincho Ancho</button>
-      <button class="tool-btn" onclick="selectTool('trigger_shake', event)">Trigger Shake</button>
       <button class="tool-btn" onclick="selectTool('pad_yellow', event)">Pad Am</button>
       <button class="tool-btn" onclick="selectTool('orb_yellow', event)">Orbe Am</button>
       <button class="tool-btn" onclick="selectTool('portal_cube', event)">Cubo</button>
@@ -297,7 +274,7 @@
   </div>
 
   <script>
-    // --- BLOQUEO ANTI-DEVTOOLS ---
+    // --- BLOQUEO ANTI-EXTENSIONES / DEVTOOLS ---
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('keydown', e => {
       if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) || (e.ctrlKey && e.key.toLowerCase() === 'u')) {
@@ -305,6 +282,7 @@
       }
     });
 
+    // --- ESTADO GLOBAL ---
     let gameActive = false;
     let animFrameId = null;
     let subMode = 'builtin'; 
@@ -326,13 +304,21 @@
     let speedMult = 1.0;
     let activeBgColor = "#091a10";
     let selectedTool = 'block';
-    let shakeTimer = 0;
 
-    let customLevels = JSON.parse(localStorage.getItem('gd_levels_v4') || '[]');
+    let customLevels = JSON.parse(localStorage.getItem('gd_levels_v3') || '[]');
     let currentEditingIndex = -1;
 
     let objects = [];
     let player = { x: 100, y: GROUND_Y - 30, size: 30, vy: 0, gravityDir: 1, mode: 'cube', isGrounded: false, angle: 0 };
+
+    const builtinDifficulties = [
+      { name: "1. Fácil", color: "#2ea44f", bg: "#091a10", endX: 2300 },
+      { name: "2. Normal", color: "#1f6feb", bg: "#091526", endX: 4600 },
+      { name: "3. Difícil", color: "#d97706", bg: "#241503", endX: 6900 },
+      { name: "4. Más Difícil", color: "#dc2626", bg: "#290a0a", endX: 9200 },
+      { name: "5. Insano", color: "#9333ea", bg: "#1a0829", endX: 11500 },
+      { name: "6. Demonio", color: "#ef4444", bg: "#1f0303", endX: 14000 }
+    ];
 
     // --- TECLA H ---
     window.addEventListener('keydown', (e) => {
@@ -346,6 +332,7 @@
 
     function toggleGameMode() {
       gameActive = !gameActive;
+
       if (gameActive) {
         classroomView.style.display = 'none';
         gdView.style.display = 'flex';
@@ -360,13 +347,10 @@
       }
     }
 
-    // --- MODAL DS ---
-    function openDsModal() { document.getElementById('ds-modal').style.display = 'flex'; }
-    function closeDsModal() { document.getElementById('ds-modal').style.display = 'none'; }
-
-    // --- CONTROLES ---
+    // --- CONTROLES DE TECLADO ---
     window.addEventListener('keydown', (e) => {
       if (!gameActive || e.code === 'KeyH') return;
+
       if (subMode === 'editor') {
         if (e.key === 'ArrowRight') moveCamera(60);
         if (e.key === 'ArrowLeft') moveCamera(-60);
@@ -390,16 +374,17 @@
     });
     window.addEventListener('mouseup', () => { isHoldingInput = false; });
 
-    function moveCamera(amount) { cameraX = Math.max(0, cameraX + amount); }
+    function moveCamera(amount) {
+      cameraX = Math.max(0, cameraX + amount);
+    }
 
-    // --- NAVEGACIÓN ---
+    // --- MODOS DE NAVEGACIÓN ---
     function switchSubMode(mode) {
       subMode = mode;
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
       document.getElementById('level-menu').style.display = 'none';
       document.getElementById('editor-toolbar').style.display = 'none';
       document.getElementById('online-menu').style.display = 'none';
-      document.getElementById('drawing-menu').style.display = 'none';
       canvas.style.display = 'block';
 
       if (mode === 'builtin') {
@@ -420,11 +405,7 @@
         canvas.style.display = 'none';
         document.getElementById('online-menu').style.display = 'flex';
         closeOnlineSection();
-      } else if (mode === 'drawing') {
-        document.getElementById('btn-drawing').classList.add('active');
-        canvas.style.display = 'none';
-        document.getElementById('drawing-menu').style.display = 'flex';
-        initDrawingCanvas();
+        updateOnlineStatus();
       }
     }
 
@@ -434,7 +415,7 @@
       if (ev && ev.target) ev.target.classList.add('selected');
     }
 
-    // --- NIVELES ---
+    // --- NIVELES PERSONALIZADOS ---
     function renderLevelList() {
       const container = document.getElementById('custom-levels-list');
       container.innerHTML = '';
@@ -446,6 +427,7 @@
           <div>
             <button class="btn-action btn-play" onclick="playCustomLevel(${idx})">Jugar</button>
             <button class="btn-action btn-edit" onclick="editCustomLevel(${idx})">Editar</button>
+            <button class="btn-action" onclick="launchCustomLevel(${idx})">Lanzar</button>
             <button class="btn-action btn-delete" onclick="deleteCustomLevel(${idx})">Borrar</button>
           </div>
         `;
@@ -471,269 +453,506 @@
       }
     }
 
-    function saveToStorage() { localStorage.setItem('gd_levels_v4', JSON.stringify(customLevels)); }
+    function saveToStorage() {
+      localStorage.setItem('gd_levels_v3', JSON.stringify(customLevels));
+    }
 
-    // --- CUBESOFT & NIVELES SEMANALES ---
+
+    // --- CUBESOFT LOCAL ---
+    // No se usa Render ni ningún servidor. Todo queda guardado en localStorage.
+    // La parte de publicación por Internet queda preparada para una futura API.
+
+    const LOCAL_CUBESOFT_LEVELS_KEY = 'cubesoft_local_levels_v1';
+    const LOCAL_CUBESOFT_BOXES_KEY = 'cubesoft_local_boxes_v1';
+    const LOCAL_CUBESOFT_WEEK_KEY = 'cubesoft_local_week_v1';
+
+    // 30 niveles nuevos de CubeSoft: 10 iniciales + 20 semanales.
     const CUBESOFT_LEVEL_NAMES = [
-      "CubeSoft 01: First Steps", "CubeSoft 02: Block Highway", "CubeSoft 03: Neon Factory",
-      "CubeSoft 04: Spike Valley", "CubeSoft 05: Gravity Station", "CubeSoft 06: Sky Fortress",
-      "CubeSoft 07: Portal Complex", "CubeSoft 08: Speed Reactor", "CubeSoft 09: Orb Laboratory",
-      "CubeSoft 10: The Long Road", "CubeSoft 11: Weekly Crystal", "CubeSoft 12: Weekly Machine",
-      "CubeSoft 13: Weekly Canyon", "CubeSoft 14: Weekly Storm", "CubeSoft 15: Weekly Core",
-      "CubeSoft 16: Weekly Maze", "CubeSoft 17: Weekly Rocket", "CubeSoft 18: Weekly Abyss",
-      "CubeSoft 19: Weekly Citadel", "CubeSoft 20: Weekly Apex", "CubeSoft 21: Weekly Nova",
-      "CubeSoft 22: Weekly Pulse", "CubeSoft 23: Weekly Zenith", "CubeSoft 24: Weekly Circuit",
-      "CubeSoft 25: Weekly Flare", "CubeSoft 26: Weekly Titan", "CubeSoft 27: Weekly Nexus",
-      "CubeSoft 28: Weekly Omega", "CubeSoft 29: Weekly Prime", "CubeSoft 30: CubeSoft Finale"
+      "CubeSoft 01: First Steps","CubeSoft 02: Block Highway","CubeSoft 03: Neon Factory",
+      "CubeSoft 04: Spike Valley","CubeSoft 05: Gravity Station","CubeSoft 06: Sky Fortress",
+      "CubeSoft 07: Portal Complex","CubeSoft 08: Speed Reactor","CubeSoft 09: Orb Laboratory",
+      "CubeSoft 10: The Long Road","CubeSoft 11: Crystal Tunnel","CubeSoft 12: Mechanical City",
+      "CubeSoft 13: Gravity Maze","CubeSoft 14: Red Canyon","CubeSoft 15: Sky Factory",
+      "CubeSoft 16: Portal Storm","CubeSoft 17: Impossible Highway","CubeSoft 18: Deep Machine",
+      "CubeSoft 19: Final Fortress","CubeSoft 20: Endless Reactor","CubeSoft 21: Dark Highway",
+      "CubeSoft 22: Mega Factory","CubeSoft 23: Gravity World","CubeSoft 24: Giant Canyon",
+      "CubeSoft 25: Portal Kingdom","CubeSoft 26: Hyper Reactor","CubeSoft 27: The Gauntlet",
+      "CubeSoft 28: Machine Core","CubeSoft 29: Final Highway","CubeSoft 30: CubeSoft Finale"
     ];
 
     function makeCubeSoftLevel(index) {
       const objects = [];
-      const length = 5500 + index * 100;
-      for (let x = 400, step = 0; x < length; x += 140, step++) {
-        if (step % 3 === 0) objects.push({type:'block', x:x, y:GROUND_Y-50, w:80, h:50});
-        else if (step % 3 === 1) objects.push({type:'spike', x:x, y:GROUND_Y-30, w:30, h:30});
-        else objects.push({type:'orb_yellow', x:x+15, y:GROUND_Y-90, r:14});
+      const length = 6000 + index * 120;
+      const patterns = [
+        ['block','spike','block','orb_yellow','spike'],
+        ['spike','spike','block','pad_yellow','orb_yellow'],
+        ['block','block','spike','portal_grav_blue','spike'],
+        ['orb_yellow','spike','portal_wave','block','spike'],
+        ['portal_ship','block','spike','orb_yellow','block'],
+        ['portal_ball','spike','block','portal_cube','spike'],
+        ['block','spike','pad_yellow','block','orb_yellow']
+      ];
+      const pattern = patterns[index % patterns.length];
+
+      for (let x = 400, step = 0; x < length; x += 145, step++) {
+        const type = pattern[step % pattern.length];
+
+        if (type === 'block') {
+          const height = 45 + ((step * 37 + index * 19) % 120);
+          objects.push({type:'block', x:x, y:GROUND_Y-height, w:90+(step%3)*25, h:height});
+        } else if (type === 'spike') {
+          objects.push({type:'spike', x:x, y:GROUND_Y-30, w:30, h:30});
+          if ((step+index)%6===0) objects.push({type:'spike',x:x+42,y:GROUND_Y-30,w:30,h:30});
+        } else if (type === 'orb_yellow') {
+          objects.push({type:'orb_yellow',x:x+30,y:GROUND_Y-100-((step*17)%75),r:14});
+        } else if (type === 'pad_yellow') {
+          objects.push({type:'pad_yellow',x:x,y:GROUND_Y-8,w:30,h:8});
+          objects.push({type:'spike',x:x+75,y:GROUND_Y-30,w:30,h:30});
+        } else if (type === 'portal_grav_blue') {
+          objects.push({type:'portal_grav_blue',x:x,y:GROUND_Y-150,w:30,h:90});
+          objects.push({type:'spike',x:x+90,y:CEILING_Y,w:30,h:30});
+          objects.push({type:'block',x:x+145,y:GROUND_Y-95,w:110,h:95});
+        } else if (type === 'portal_wave') {
+          objects.push({type:'portal_wave',x:x,y:GROUND_Y-150,w:30,h:90});
+          objects.push({type:'block',x:x+100,y:GROUND_Y-120,w:130,h:120});
+          objects.push({type:'block',x:x+300,y:CEILING_Y,w:130,h:90});
+          objects.push({type:'spike',x:x+500,y:GROUND_Y-30,w:30,h:30});
+        } else if (type === 'portal_ship') {
+          objects.push({type:'portal_ship',x:x,y:GROUND_Y-150,w:30,h:90});
+          objects.push({type:'block',x:x+120,y:GROUND_Y-170,w:100,h:170});
+          objects.push({type:'block',x:x+300,y:CEILING_Y,w:100,h:130});
+        } else if (type === 'portal_ball') {
+          objects.push({type:'portal_ball',x:x,y:GROUND_Y-150,w:30,h:90});
+          objects.push({type:'spike',x:x+100,y:GROUND_Y-30,w:30,h:30});
+          objects.push({type:'spike',x:x+190,y:CEILING_Y,w:30,h:30});
+        } else if (type === 'portal_cube') {
+          objects.push({type:'portal_cube',x:x,y:GROUND_Y-150,w:30,h:90});
+          objects.push({type:'block',x:x+100,y:GROUND_Y-70,w:100,h:70});
+        }
+
+        if ((step+index)%9===0) objects.push({type:'orb_yellow',x:x+65,y:GROUND_Y-155,r:14});
+        if ((step*3+index)%13===0) objects.push({type:'spike',x:x+55,y:GROUND_Y-30,w:30,h:30});
       }
+
+      objects.push({type:'block',x:length-500,y:GROUND_Y-100,w:140,h:100});
+      objects.push({type:'spike',x:length-300,y:GROUND_Y-30,w:30,h:30});
+      objects.push({type:'spike',x:length-255,y:GROUND_Y-30,w:30,h:30});
+      objects.push({type:'block',x:length-80,y:GROUND_Y-60,w:80,h:60});
+
       return {
-        name: CUBESOFT_LEVEL_NAMES[index] || ("CubeSoft " + (index+1)),
-        description: "Nivel oficial semanal de CubeSoft (Nuevo nivel cada semana)",
+        name: CUBESOFT_LEVEL_NAMES[index],
+        description: "Nivel largo y complejo · " + Math.round(length/100) + "0 unidades",
         objects: objects
       };
     }
 
-    function getCubeSoftLevels() {
-      let levels = [];
-      const currentWeek = Math.floor(Date.now() / (7*24*60*60*1000));
-      let startWeek = Number(localStorage.getItem('cubesoft_start_week') || currentWeek);
-      const passedWeeks = Math.max(0, currentWeek - startWeek);
-      const totalAvailable = Math.min(30, 10 + passedWeeks);
+    const CUBESOFT_INITIAL_LEVELS = Array.from({length:10}, (_,i) => makeCubeSoftLevel(i));
 
-      for(let i=0; i<totalAvailable; i++) {
-        levels.push(makeCubeSoftLevel(i));
+    const CUBESOFT_RESERVE_NAMES = CUBESOFT_LEVEL_NAMES.slice(10);
+
+    function cloneLevelData(level) {
+      return JSON.parse(JSON.stringify({
+        name: level.name,
+        description: level.description || '',
+        objects: level.objects || []
+      }));
+    }
+
+    function ensureLocalCubeSoftData() {
+      let levels;
+      try { levels = JSON.parse(localStorage.getItem(LOCAL_CUBESOFT_LEVELS_KEY) || 'null'); }
+      catch(e) { levels = null; }
+
+      // Se elimina la colección anterior y se instala la nueva.
+      if (!Array.isArray(levels) || levels.length === 0 ||
+          !String(levels[0].name || '').startsWith('CubeSoft 01:')) {
+        levels = CUBESOFT_INITIAL_LEVELS.map(cloneLevelData);
+        localStorage.setItem(LOCAL_CUBESOFT_WEEK_KEY, String(Math.floor(Date.now() / (7*24*60*60*1000))));
       }
+
+      const currentWeek = Math.floor(Date.now() / (7*24*60*60*1000));
+      let lastWeek = Number(localStorage.getItem(LOCAL_CUBESOFT_WEEK_KEY));
+      if (!Number.isFinite(lastWeek)) lastWeek = currentWeek;
+
+      // Por cada semana pasada se añade exactamente un nivel, hasta llegar a 30.
+      const weeksPassed = Math.max(0, currentWeek - lastWeek);
+      for (let i=0; i<weeksPassed && levels.length<30; i++) {
+        levels.push(makeCubeSoftLevel(levels.length));
+      }
+
+      localStorage.setItem(LOCAL_CUBESOFT_LEVELS_KEY, JSON.stringify(levels));
+      localStorage.setItem(LOCAL_CUBESOFT_WEEK_KEY, String(currentWeek));
       return levels;
     }
 
-    function loadCubeSoftShop() {
-      const list = document.getElementById('cubesoft-shop-list');
-      const levels = getCubeSoftLevels();
+    function updateOnlineStatus() {
+      ensureLocalCubeSoftData();
+      setTimeout(() => {
+        const el = document.getElementById('online-status');
+        if (el) el.textContent = '● Modo local · sin Internet';
+      }, 0);
+    }
+
+    function loadLocalCubeSoftLevels() {
+      const list = document.getElementById('online-shop-list');
+      const levels = ensureLocalCubeSoftData();
       list.innerHTML = '';
 
       levels.forEach((lvl, idx) => {
         const item = document.createElement('div');
         item.className = 'online-item';
-        item.innerHTML = `
-          <div>
-            <strong>${lvl.name}</strong>
-            <small>${lvl.description}</small>
-          </div>
-          <div style="display:flex; gap:6px;">
-            <button class="btn-action btn-test" onclick="testCubeSoftLevel(${idx})">Probar</button>
-            <button class="btn-action btn-play" onclick="receiveCubeSoftLevel(${idx})">Guardar</button>
-          </div>
-        `;
+
+        const info = document.createElement('div');
+        const title = document.createElement('strong');
+        title.textContent = lvl.name;
+        const desc = document.createElement('small');
+        desc.textContent = (lvl.description || 'Nivel de CubeSoft') + ' · ' + (lvl.objects || []).length + ' objetos';
+        info.appendChild(title);
+        info.appendChild(desc);
+
+        const button = document.createElement('button');
+        button.className = 'btn-action btn-play';
+        button.textContent = 'Recibir';
+        button.onclick = () => receiveCubeSoftLevel(idx);
+
+        item.appendChild(info);
+        item.appendChild(button);
         list.appendChild(item);
       });
-    }
 
-    function testCubeSoftLevel(idx) {
-      const levels = getCubeSoftLevels();
-      objects = levels[idx].objects;
-      LEVEL_LENGTH = Math.max(3000, ...objects.map(o => o.x + 500));
-      subMode = 'playing_custom';
-      document.getElementById('online-menu').style.display = 'none';
-      canvas.style.display = 'block';
-      resetPlayer();
+      if (!levels.length) {
+        list.innerHTML = '<div class="online-empty">No hay niveles disponibles.</div>';
+      }
     }
 
     function receiveCubeSoftLevel(idx) {
-      const levels = getCubeSoftLevels();
-      customLevels.push(JSON.parse(JSON.stringify(levels[idx])));
+      const levels = ensureLocalCubeSoftData();
+      if (!levels[idx]) return;
+
+      const received = cloneLevelData(levels[idx]);
+      received.name = received.name + " [CubeSoft]";
+      customLevels.push(received);
       saveToStorage();
-      alert("¡Nivel guardado en Mis Niveles con éxito!");
+      alert("Nivel recibido y guardado en Mis Niveles.");
     }
 
-    function openDesignChallenge() {
-      alert("🧊 Desafío de Diseño CubeSoft:\n\nTemática actual: 'Neon Industrial'\nEnvía tus cajas de juegos diseñadas desde el editor o consulta las reglas en la página oficial del repositorio.");
-    }
-
-    function openOnlineSection(section) {
-      document.getElementById('online-home').style.display = 'none';
-      document.getElementById('online-cubesoft-view').style.display = section === 'cubesoft' ? 'flex' : 'none';
-      document.getElementById('online-boxes-view').style.display = section === 'boxes' ? 'flex' : 'none';
-      if (section === 'cubesoft') loadCubeSoftShop();
-      if (section === 'boxes') renderLocalBoxes();
-    }
-
-    function closeOnlineSection() {
-      document.getElementById('online-home').style.display = 'grid';
-      document.getElementById('online-cubesoft-view').style.display = 'none';
-      document.getElementById('online-boxes-view').style.display = 'none';
-    }
-
-    // --- CAJAS & MINIJUEGOS JSON ---
     function getLocalBoxes() {
-      try { return JSON.parse(localStorage.getItem('cubesoft_boxes_v2') || '[]'); } catch(e) { return []; }
+      try {
+        const boxes = JSON.parse(localStorage.getItem(LOCAL_CUBESOFT_BOXES_KEY) || '[]');
+        return Array.isArray(boxes) ? boxes : [];
+      } catch(e) {
+        return [];
+      }
+    }
+
+    function saveLocalBoxes(boxes) {
+      localStorage.setItem(LOCAL_CUBESOFT_BOXES_KEY, JSON.stringify(boxes));
+    }
+
+    function generateBoxId(boxes) {
+      let id;
+      do {
+        id = String(Math.floor(100000 + Math.random() * 900000));
+      } while (boxes.some(b => b.id === id));
+      return id;
+    }
+
+    function createLocalBox() {
+      if (!customLevels.length) {
+        alert("No tienes niveles en Mis Niveles para guardar en una caja.");
+        return;
+      }
+
+      const available = customLevels.map((lvl, idx) => `${idx + 1}. ${lvl.name}`).join('\n');
+      let first = prompt("Escribe el número del PRIMER nivel que quieres meter en la caja:\n\n" + available);
+      if (first === null) return;
+      let firstIdx = Number(first) - 1;
+
+      if (!Number.isInteger(firstIdx) || !customLevels[firstIdx]) {
+        alert("Nivel no válido.");
+        return;
+      }
+
+      let second = prompt("Escribe el número del SEGUNDO nivel o pulsa Cancelar para crear la caja con uno:\n\n" + available);
+      let selected = [firstIdx];
+
+      if (second !== null && second.trim() !== '') {
+        let secondIdx = Number(second) - 1;
+        if (!Number.isInteger(secondIdx) || !customLevels[secondIdx]) {
+          alert("Segundo nivel no válido. La caja se creará con el primero.");
+        } else if (secondIdx === firstIdx) {
+          alert("No puedes meter dos veces el mismo nivel.");
+        } else {
+          selected.push(secondIdx);
+        }
+      }
+
+      const boxes = getLocalBoxes();
+      const box = {
+        id: generateBoxId(boxes),
+        levels: selected.map(i => cloneLevelData(customLevels[i])),
+        createdAt: Date.now()
+      };
+
+      boxes.push(box);
+      saveLocalBoxes(boxes);
+      renderLocalBoxes();
+      alert("Caja creada.\nID: " + box.id);
     }
 
     function renderLocalBoxes() {
       const list = document.getElementById('online-box-list');
+      if (!list) return;
+
       const boxes = getLocalBoxes();
       list.innerHTML = '';
+
       if (!boxes.length) {
-        list.innerHTML = '<div class="online-empty">No hay cajas guardadas. Crea una o descarga un minijuego .json</div>';
+        list.innerHTML = '<div class="online-empty">No hay cajas todavía.<br>Crea una caja desde aquí.</div>';
         return;
       }
+
       boxes.forEach(box => {
         const item = document.createElement('div');
         item.className = 'online-item';
-        item.innerHTML = `
-          <div>
-            <strong>Caja #${box.id}</strong>
-            <small>${box.levels.map(l=>l.name).join(' · ')}</small>
-          </div>
-          <div style="display:flex; gap:6px;">
-            <button class="btn-action btn-play" onclick="receiveBoxLevels('${box.id}')">Guardar</button>
-            <button class="btn-action btn-edit" onclick="downloadBoxJson('${box.id}')">Descargar JSON</button>
-          </div>
-        `;
+
+        const info = document.createElement('div');
+        const title = document.createElement('strong');
+        title.textContent = 'Caja #' + box.id;
+        const details = document.createElement('small');
+        details.className = 'box-levels';
+        details.textContent = (box.levels || []).map(l => l.name).join(' · ') || 'Vacía';
+        info.appendChild(title);
+        info.appendChild(details);
+
+        const actions = document.createElement('div');
+        actions.style.display = 'flex';
+        actions.style.gap = '6px';
+        actions.style.flexWrap = 'wrap';
+
+        const button = document.createElement('button');
+        button.className = 'btn-action btn-play';
+        button.textContent = 'Recibir niveles';
+        button.onclick = () => receiveLocalBox(box.id);
+
+        const download = document.createElement('button');
+        download.className = 'btn-action';
+        download.textContent = 'Descargar';
+        download.onclick = () => downloadLocalBox(box.id);
+
+        actions.appendChild(button);
+        actions.appendChild(download);
+        item.appendChild(info);
+        item.appendChild(actions);
         list.appendChild(item);
       });
     }
 
-    function createLocalBox() {
-      if (!customLevels.length) return alert("Crea algún nivel primero en Mis Niveles.");
-      const box = { id: Math.floor(100000 + Math.random()*900000).toString(), levels: customLevels.slice(-2) };
-      let boxes = getLocalBoxes();
-      boxes.push(box);
-      localStorage.setItem('cubesoft_boxes_v2', JSON.stringify(boxes));
-      renderLocalBoxes();
-      alert("Caja creada con éxito. ID: " + box.id);
-    }
-
     function searchLocalBox() {
       const id = document.getElementById('box-search-id').value.trim();
-      const boxes = getLocalBoxes();
-      const found = boxes.find(b => b.id === id);
-      if (!found) return alert("Caja no encontrada.");
-      alert("Caja encontrada con " + found.levels.length + " niveles.");
-    }
+      const list = document.getElementById('online-box-list');
 
-    function receiveBoxLevels(id) {
-      const boxes = getLocalBoxes();
-      const found = boxes.find(b => b.id === id);
-      if (found) {
-        found.levels.forEach(l => customLevels.push(JSON.parse(JSON.stringify(l))));
-        saveToStorage();
-        alert("Niveles de la caja añadidos a Mis Niveles.");
+      if (!id) {
+        renderLocalBoxes();
+        return;
       }
+
+      const box = getLocalBoxes().find(b => b.id === id);
+      if (!box) {
+        list.innerHTML = '<div class="online-empty">No existe una caja con el ID #' + id + ' en este dispositivo.</div>';
+        return;
+      }
+
+      list.innerHTML = '';
+      const item = document.createElement('div');
+      item.className = 'online-item';
+
+      const info = document.createElement('div');
+      const title = document.createElement('strong');
+      title.textContent = 'Caja #' + box.id;
+      const details = document.createElement('small');
+      details.textContent = (box.levels || []).map(l => l.name).join(' · ') || 'Vacía';
+      info.appendChild(title);
+      info.appendChild(details);
+
+      const actions = document.createElement('div');
+      actions.style.display = 'flex';
+      actions.style.gap = '6px';
+
+      const button = document.createElement('button');
+      button.className = 'btn-action btn-play';
+      button.textContent = 'Recibir niveles';
+      button.onclick = () => receiveLocalBox(box.id);
+
+      const download = document.createElement('button');
+      download.className = 'btn-action';
+      download.textContent = 'Descargar';
+      download.onclick = () => downloadLocalBox(box.id);
+
+      actions.appendChild(button);
+      actions.appendChild(download);
+      item.appendChild(info);
+      item.appendChild(actions);
+      list.appendChild(item);
     }
 
-    function triggerJsonDownloadInput() {
-      if (!customLevels.length) return alert("No hay niveles para exportar como JSON.");
-      const data = { format: "CubeSoftMinigame", levels: customLevels.slice(-1) };
-      const blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
+    function receiveLocalBox(id) {
+      const box = getLocalBoxes().find(b => b.id === id);
+      if (!box) {
+        alert("Caja no encontrada.");
+        return;
+      }
+
+      let received = 0;
+      (box.levels || []).forEach(level => {
+        const copy = cloneLevelData(level);
+        copy.name = copy.name + " [Caja #" + id + "]";
+        customLevels.push(copy);
+        received++;
+      });
+
+      saveToStorage();
+      alert(received + " nivel(es) recibidos y guardados en Mis Niveles.");
+    }
+
+    function downloadLocalBox(id) {
+      const box = getLocalBoxes().find(b => b.id === id);
+      if (!box) return alert("Caja no encontrada.");
+
+      const data = {
+        format: "CubeSoftBox",
+        version: 1,
+        id: box.id,
+        levels: (box.levels || []).map(cloneLevelData),
+        createdAt: box.createdAt || Date.now()
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
-      a.download = "minijuego_cubesoft.json";
+      a.download = "CubeSoft_Box_" + box.id + ".json";
+      document.body.appendChild(a);
       a.click();
+      a.remove();
       URL.revokeObjectURL(url);
     }
 
-    function handleJsonUpload(e) {
-      const file = e.target.files[0];
+    function loadBoxFromDevice() {
+      const input = document.getElementById("cubesoft-box-file-input");
+      if (input) {
+        input.value = "";
+        input.click();
+      }
+    }
+
+    function handleBoxFile(event) {
+      const file = event.target.files && event.target.files[0];
       if (!file) return;
+
       const reader = new FileReader();
-      reader.onload = function(evt) {
+      reader.onload = function() {
         try {
-          const json = JSON.parse(evt.target.result);
-          if (json.levels) {
-            json.levels.forEach(l => customLevels.push(l));
-            saveToStorage();
-            alert("¡Minijuego JSON importado correctamente a Mis Niveles!");
-            renderLocalBoxes();
+          const data = JSON.parse(reader.result);
+          if (!data || data.format !== "CubeSoftBox" ||
+              !Array.isArray(data.levels) || data.levels.length > 2) {
+            throw new Error("Formato inválido");
           }
-        } catch(err) {
-          alert("Archivo JSON inválido.");
+
+          const boxes = getLocalBoxes();
+          let id = String(data.id || generateBoxId(boxes));
+          if (boxes.some(b => b.id === id)) id = generateBoxId(boxes);
+
+          boxes.push({
+            id: id,
+            levels: data.levels.slice(0,2).map(cloneLevelData),
+            createdAt: data.createdAt || Date.now()
+          });
+
+          saveLocalBoxes(boxes);
+          renderLocalBoxes();
+          alert("Caja cargada correctamente.\nID: " + id);
+        } catch(e) {
+          alert("No se pudo cargar la caja. El archivo no es una caja CubeSoft válida.");
         }
       };
       reader.readAsText(file);
     }
 
-    // --- PESTAÑA DE DIBUJO Y ENCARGOS ---
-    let drawCanvas, drawCtx, isDrawing = false, drawTool = 'pencil';
-    function initDrawingCanvas() {
-      drawCanvas = document.getElementById('drawingCanvas');
-      drawCtx = drawCanvas.getContext('2d');
-      drawCtx.fillStyle = "#ffffff";
-      drawCtx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
+    function openOnlineSection(section) {
+      document.getElementById('online-home').style.display = 'none';
+      document.getElementById('online-shop-view').style.display = section === 'shop' ? 'flex' : 'none';
+      document.getElementById('online-boxes-view').style.display = section === 'boxes' ? 'flex' : 'none';
 
-      drawCanvas.onmousedown = (e) => { isDrawing = true; drawStart(e); };
-      drawCanvas.onmousemove = (e) => { if (isDrawing) drawMove(e); };
-      drawCanvas.onmouseup = () => { isDrawing = false; };
+      if (section === 'shop') loadLocalCubeSoftLevels();
+      if (section === 'boxes') renderLocalBoxes();
     }
 
-    function setDrawTool(tool, ev) {
-      drawTool = tool;
-      document.querySelectorAll('.draw-tool-btn').forEach(b => b.classList.remove('selected'));
-      if(ev && ev.target) ev.target.classList.add('selected');
+    function closeOnlineSection() {
+      document.getElementById('online-home').style.display = 'grid';
+      document.getElementById('online-shop-view').style.display = 'none';
+      document.getElementById('online-boxes-view').style.display = 'none';
     }
 
-    function getDrawPos(e) {
-      const rect = drawCanvas.getBoundingClientRect();
-      return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    function editCustomLevel(idx) {
+      currentEditingIndex = idx;
+      objects = customLevels[idx].objects;
+      switchSubMode('editor');
     }
 
-    function drawStart(e) {
-      const pos = getDrawPos(e);
-      drawCtx.beginPath();
-      drawCtx.moveTo(pos.x, pos.y);
-    }
 
-    function drawMove(e) {
-      const pos = getDrawPos(e);
-      const color = document.getElementById('draw-color').value;
-      drawCtx.strokeStyle = color;
-      drawCtx.fillStyle = color;
-      drawCtx.lineWidth = drawTool === 'brush' ? 12 : drawTool === 'eraser' ? 20 : 3;
+    function launchCustomLevel(idx) {
+      if (!customLevels[idx]) return;
 
-      if (drawTool === 'eraser') {
-        drawCtx.strokeStyle = '#ffffff';
-        drawCtx.lineTo(pos.x, pos.y);
-        drawCtx.stroke();
-      } else if (drawTool === 'pencil' || drawTool === 'brush') {
-        drawCtx.lineTo(pos.x, pos.y);
-        drawCtx.stroke();
+      const code = prompt("Introduce el código para lanzar este nivel:");
+      if (code === null) return;
+
+      // El código correcto no se escribe ni se muestra en la interfaz.
+      if (code !== String.fromCharCode(53,53,54,50,51,50,51)) {
+        alert("Código incorrecto.");
+        return;
       }
+
+      // Sin servidor no podemos publicarlo en Internet.
+      // Se guarda como "publicado localmente" para no perder el trabajo.
+      let published = JSON.parse(localStorage.getItem('cubesoft_local_published_v1') || '[]');
+      const already = published.findIndex(l => l.name === customLevels[idx].name);
+
+      if (already === -1) {
+        published.push(cloneLevelData(customLevels[idx]));
+      } else {
+        published[already] = cloneLevelData(customLevels[idx]);
+      }
+
+      localStorage.setItem('cubesoft_local_published_v1', JSON.stringify(published));
+      alert("Nivel lanzado en el modo local.\n\nCuando tengas un servidor/API, esta función podrá publicarlo realmente en CubeSoft.");
     }
 
-    function clearDrawingCanvas() {
-      drawCtx.fillStyle = "#ffffff";
-      drawCtx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
+    function playCustomLevel(idx) {
+      objects = customLevels[idx].objects;
+      LEVEL_LENGTH = Math.max(3000, ...objects.map(o => o.x + 500));
+      subMode = 'playing_custom';
+      document.getElementById('level-menu').style.display = 'none';
+      canvas.style.display = 'block';
+      resetPlayer();
     }
 
-    function loadDrawingTemplate() {
-      clearDrawingCanvas();
-      drawCtx.strokeStyle = "#cbd5e1";
-      drawCtx.lineWidth = 1;
-      drawCtx.strokeRect(40, 40, drawCanvas.width - 80, drawCanvas.height - 80);
-      drawCtx.fillStyle = "#94a3b8";
-      drawCtx.font = "14px sans-serif";
-      drawCtx.fillText("Plantilla CubeSoft activa: Dibuja tu caja o diseño aquí", 60, 70);
+    function deleteCustomLevel(idx) {
+      customLevels.splice(idx, 1);
+      saveToStorage();
+      renderLevelList();
     }
 
-    function saveDrawingCommission() {
-      alert("Encargo de dibujo guardado correctamente en la memoria local.");
-    }
-
-    // --- EDITOR CLIC ---
+    // --- CLIC EN EDITOR Y ENCAJE PERFECTO A REJILLA ---
     canvas.addEventListener('click', (e) => {
       if (subMode !== 'editor') return;
       const rect = canvas.getBoundingClientRect();
-      const clickX = (e.clientX - rect.left) * (canvas.width / rect.width) + cameraX;
-      const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
+      
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+
+      const clickX = (e.clientX - rect.left) * scaleX + cameraX;
+      const clickY = (e.clientY - rect.top) * scaleY;
 
       const gridX = Math.floor(clickX / GRID_SIZE) * GRID_SIZE;
       const gridY = Math.floor(clickY / GRID_SIZE) * GRID_SIZE;
@@ -741,10 +960,15 @@
       if (selectedTool === 'eraser') {
         objects = objects.filter(o => !(Math.abs(o.x - gridX) < 15 && Math.abs(o.y - gridY) < 15));
       } else {
+        const colorVal = document.getElementById('trigger-color-input').value;
         let newObj = { type: selectedTool, x: gridX, y: gridY, w: 30, h: 30, r: 14 };
-        if (selectedTool === 'spike_wide') { newObj.w = 60; }
-        if (selectedTool === 'trigger_color') { newObj.color = document.getElementById('trigger-color-input').value; }
-        if (selectedTool.startsWith('orb')) { newObj.x = gridX + 15; newObj.y = gridY + 15; }
+        if (selectedTool === 'trigger_color') newObj.color = colorVal;
+        
+        if (selectedTool.startsWith('orb')) {
+          newObj.x = gridX + 15;
+          newObj.y = gridY + 15;
+        }
+
         objects.push(newObj);
       }
     });
@@ -752,11 +976,17 @@
     function generateBuiltinLevel() {
       objects = [
         { type: 'spike', x: 600, y: GROUND_Y - 30, w: 30, h: 30 },
-        { type: 'spike_wide', x: 800, y: GROUND_Y - 30, w: 60, h: 30 },
-        { type: 'trigger_shake', x: 1000, y: GROUND_Y - 30, w: 30, h: 30 },
-        { type: 'pad_yellow', x: 1200, y: GROUND_Y - 8, w: 30, h: 8 },
-        { type: 'block', x: 1400, y: GROUND_Y - 60, w: 90, h: 60 },
-        { type: 'portal_ship', x: 2100, y: GROUND_Y - 150, w: 30, h: 90 }
+        { type: 'pad_yellow', x: 900, y: GROUND_Y - 8, w: 30, h: 8 },
+        { type: 'block', x: 1100, y: GROUND_Y - 60, w: 90, h: 60 },
+        { type: 'orb_yellow', x: 1415, y: GROUND_Y - 75, r: 14 },
+        { type: 'portal_ship', x: 2100, y: GROUND_Y - 150, w: 30, h: 90 },
+        { type: 'speed_fast', x: 2300, y: GROUND_Y - 90, w: 30, h: 60 },
+        { type: 'portal_wave', x: 3800, y: GROUND_Y - 150, w: 30, h: 90 },
+        { type: 'portal_ball', x: 5000, y: GROUND_Y - 150, w: 30, h: 90 },
+        { type: 'portal_cube', x: 6600, y: GROUND_Y - 150, w: 30, h: 90 },
+        { type: 'trigger_color', x: 7000, y: GROUND_Y - 90, w: 30, h: 30, color: '#4a0e4e' },
+        { type: 'speed_slow', x: 7200, y: GROUND_Y - 90, w: 30, h: 60 },
+        { type: 'portal_grav_blue', x: 7600, y: GROUND_Y - 150, w: 30, h: 90 }
       ];
       LEVEL_LENGTH = 14000;
     }
@@ -773,12 +1003,22 @@
       activeBgColor = "#091a10";
     }
 
-    function startLoop() { if (!animFrameId) gameLoop(); }
-    function stopLoop() { if (animFrameId) { cancelAnimationFrame(animFrameId); animFrameId = null; } }
+    // --- BUCLE PRINCIPAL ---
+    function startLoop() {
+      if (!animFrameId) gameLoop();
+    }
+
+    function stopLoop() {
+      if (animFrameId) {
+        cancelAnimationFrame(animFrameId);
+        animFrameId = null;
+      }
+    }
 
     function gameLoop() {
       if (gameActive) {
         let currentSpeed = baseSpeed * speedMult;
+
         if (subMode === 'builtin' || subMode === 'playing_custom') {
           player.x += currentSpeed;
 
@@ -804,100 +1044,202 @@
           }
 
           player.y += player.vy;
-          player.isGrounded = false;
 
+          player.isGrounded = false;
           if (player.gravityDir === 1 && player.y >= GROUND_Y - player.size) {
             player.y = GROUND_Y - player.size;
             player.vy = 0;
             player.isGrounded = true;
+            if (player.mode === 'wave') resetPlayer();
           } else if (player.gravityDir === -1 && player.y <= CEILING_Y) {
             player.y = CEILING_Y;
             player.vy = 0;
             player.isGrounded = true;
+            if (player.mode === 'wave') resetPlayer();
+          }
+
+          if (player.mode === 'cube') {
+            if (!player.isGrounded) player.angle += 0.15 * player.gravityDir;
+            else player.angle = Math.round(player.angle / (Math.PI / 2)) * (Math.PI / 2);
+          } else if (player.mode === 'ship') {
+            player.angle = player.vy * 0.06;
+          } else if (player.mode === 'ball') {
+            player.angle += 0.1 * player.gravityDir;
+          } else if (player.mode === 'wave') {
+            player.angle = player.vy > 0 ? Math.PI / 4 : -Math.PI / 4;
           }
 
           cameraX = player.x - 120;
+
           let pHitbox = { x: player.x + 4, y: player.y + 4, w: player.size - 8, h: player.size - 8 };
 
           for (let obj of objects) {
             if (obj.x > cameraX - 100 && obj.x < cameraX + 900) {
               if (obj.type === 'block') {
-                if (pHitbox.x < obj.x + obj.w && pHitbox.x + pHitbox.w > obj.x &&
-                    pHitbox.y < obj.y + obj.h && pHitbox.y + pHitbox.h > obj.y) {
-                  resetPlayer(); break;
+                let bBox = { x: obj.x, y: obj.y, w: obj.w, h: obj.h };
+                if (pHitbox.x < bBox.x + bBox.w && pHitbox.x + pHitbox.w > bBox.x &&
+                    pHitbox.y < bBox.y + bBox.h && pHitbox.y + pHitbox.h > bBox.y) {
+                  if (player.mode !== 'wave' && player.vy * player.gravityDir >= 0 && Math.abs((player.y + (player.gravityDir === 1 ? player.size : 0)) - (player.gravityDir === 1 ? obj.y : obj.y + obj.h)) < 16) {
+                    player.y = player.gravityDir === 1 ? obj.y - player.size : obj.y + obj.h;
+                    player.vy = 0;
+                    player.isGrounded = true;
+                  } else {
+                    resetPlayer();
+                    break;
+                  }
                 }
-              } else if (obj.type === 'spike' || obj.type === 'spike_wide') {
-                if (pHitbox.x < obj.x + obj.w && pHitbox.x + pHitbox.w > obj.x &&
-                    pHitbox.y < obj.y + obj.h && pHitbox.y + pHitbox.h > obj.y) {
-                  resetPlayer(); break;
+              } else if (obj.type === 'spike') {
+                let sHitbox = { x: obj.x + 7, y: obj.y + 8, w: obj.w - 14, h: obj.h - 10 };
+                if (pHitbox.x < sHitbox.x + sHitbox.w && pHitbox.x + pHitbox.w > sHitbox.x &&
+                    pHitbox.y < sHitbox.y + sHitbox.h && pHitbox.y + pHitbox.h > sHitbox.y) {
+                  resetPlayer();
+                  break;
                 }
-              } else if (obj.type === 'trigger_shake') {
-                if (player.x >= obj.x && shakeTimer <= 0) shakeTimer = 25;
+              } else if (obj.type.startsWith('orb')) {
+                let dist = Math.hypot((player.x + player.size/2) - obj.x, (player.y + player.size/2) - obj.y);
+                if (dist < obj.r + 15 && inputJustPressed) {
+                  if (obj.type === 'orb_yellow') player.vy = -12 * player.gravityDir;
+                  inputJustPressed = false;
+                }
+              } else if (obj.type.startsWith('pad')) {
+                if (pHitbox.x < obj.x + obj.w && pHitbox.x + pHitbox.w > obj.x && pHitbox.y + pHitbox.h >= obj.y) {
+                  if (obj.type === 'pad_yellow') player.vy = -14 * player.gravityDir;
+                }
               } else if (obj.type.startsWith('portal')) {
                 if (Math.abs(player.x - obj.x) < 20) {
                   if (obj.type === 'portal_ship') player.mode = 'ship';
                   if (obj.type === 'portal_cube') player.mode = 'cube';
                   if (obj.type === 'portal_ball') player.mode = 'ball';
                   if (obj.type === 'portal_wave') player.mode = 'wave';
+                  if (obj.type === 'portal_grav_blue') player.gravityDir = -1;
+                  if (obj.type === 'portal_grav_yellow') player.gravityDir = 1;
                 }
+              } else if (obj.type.startsWith('speed')) {
+                if (Math.abs(player.x - obj.x) < 20) {
+                  if (obj.type === 'speed_slow') speedMult = 0.6;
+                  if (obj.type === 'speed_normal') speedMult = 1.0;
+                  if (obj.type === 'speed_fast') speedMult = 1.6;
+                }
+              } else if (obj.type === 'trigger_color') {
+                if (player.x >= obj.x) activeBgColor = obj.color;
               }
             }
           }
           inputJustPressed = false;
         }
 
-        ctx.save();
-        if (shakeTimer > 0) {
-          shakeTimer--;
-          ctx.translate((Math.random()-0.5)*6, (Math.random()-0.5)*6);
+        // Renderizado
+        let progress = Math.min(100, Math.floor((player.x / LEVEL_LENGTH) * 100));
+        document.getElementById('progress-text').innerText = `${progress}%`;
+        document.getElementById('mode-text').innerText = player.mode.toUpperCase();
+        document.getElementById('speed-text').innerText = `${speedMult}x`;
+
+        if (subMode === 'builtin') {
+          let currentDiff = builtinDifficulties.find(d => player.x < d.endX) || builtinDifficulties[5];
+          let diffEl = document.getElementById('diff-text');
+          diffEl.innerText = currentDiff.name;
+          diffEl.style.backgroundColor = currentDiff.color;
+          ctx.fillStyle = currentDiff.bg;
+        } else {
+          let diffEl = document.getElementById('diff-text');
+          diffEl.innerText = subMode === 'editor' ? 'EDITOR' : 'CUSTOM';
+          diffEl.style.backgroundColor = '#1f6feb';
+          ctx.fillStyle = activeBgColor;
         }
 
-        ctx.fillStyle = activeBgColor;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Rejilla de editor
+        // Renderizado de Rejilla perfectamente alineada con GROUND_Y
         if (subMode === 'editor') {
-          ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+          ctx.lineWidth = 1;
+
           let offsetX = cameraX % GRID_SIZE;
           for (let x = -offsetX; x <= canvas.width; x += GRID_SIZE) {
             ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
           }
+
           for (let y = GROUND_Y; y >= 0; y -= GRID_SIZE) {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+          }
+          for (let y = GROUND_Y + GRID_SIZE; y <= canvas.height; y += GRID_SIZE) {
             ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
           }
         }
 
-        // Suelo y objetos
+        // Suelo y Techo
         ctx.fillStyle = "#161b22";
         ctx.fillRect(0, GROUND_Y, canvas.width, canvas.height - GROUND_Y);
+        ctx.fillRect(0, 0, canvas.width, CEILING_Y);
+        ctx.strokeStyle = "#30363d";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, GROUND_Y); ctx.lineTo(canvas.width, GROUND_Y);
+        ctx.moveTo(0, CEILING_Y); ctx.lineTo(canvas.width, CEILING_Y);
+        ctx.stroke();
 
+        // Objetos
         for (let obj of objects) {
           let dx = obj.x - cameraX;
-          if (dx > -80 && dx < 900) {
-            if (obj.type === 'spike' || obj.type === 'spike_wide') {
+          if (dx > -60 && dx < 900) {
+            if (obj.type === 'spike') {
               ctx.fillStyle = "#ff4444";
-              ctx.beginPath(); ctx.moveTo(dx, obj.y + obj.h); ctx.lineTo(dx + obj.w / 2, obj.y); ctx.lineTo(dx + obj.w, obj.y + obj.h);
-              ctx.fill();
-            } else if (obj.type === 'trigger_shake') {
-              ctx.fillStyle = "#a855f7"; ctx.fillRect(dx, obj.y, obj.w, obj.h);
+              ctx.beginPath();
+              ctx.moveTo(dx, obj.y + obj.h); ctx.lineTo(dx + obj.w / 2, obj.y); ctx.lineTo(dx + obj.w, obj.y + obj.h);
+              ctx.closePath(); ctx.fill(); ctx.strokeStyle = "#fff"; ctx.stroke();
             } else if (obj.type === 'block') {
               ctx.fillStyle = "#21262d"; ctx.fillRect(dx, obj.y, obj.w, obj.h);
+              ctx.strokeStyle = "#8b949e"; ctx.strokeRect(dx, obj.y, obj.w, obj.h);
+            } else if (obj.type.startsWith('orb')) {
+              ctx.fillStyle = "#ffd700";
+              ctx.beginPath(); ctx.arc(dx, obj.y, obj.r, 0, Math.PI * 2); ctx.fill();
+              ctx.strokeStyle = "#fff"; ctx.stroke();
+            } else if (obj.type.startsWith('pad')) {
+              ctx.fillStyle = "#ffd700";
+              ctx.fillRect(dx, obj.y, obj.w, obj.h);
             } else if (obj.type.startsWith('portal')) {
-              ctx.fillStyle = "#00ffcc"; ctx.fillRect(dx, obj.y, obj.w, obj.h);
+              ctx.fillStyle = obj.type.includes('ship') ? "#00ffcc" : 
+                              obj.type.includes('ball') ? "#ff8800" :
+                              obj.type.includes('wave') ? "#00ffff" :
+                              obj.type.includes('cube') ? "#0099ff" : "#a855f7";
+              ctx.fillRect(dx, obj.y, obj.w, obj.h);
+            } else if (obj.type.startsWith('speed')) {
+              ctx.fillStyle = obj.type.includes('slow') ? "#888888" :
+                              obj.type.includes('normal') ? "#33cc33" : "#ff3333";
+              ctx.fillRect(dx, obj.y, obj.w, obj.h);
+            } else if (obj.type === 'trigger_color') {
+              ctx.fillStyle = obj.color || '#ff0000';
+              ctx.fillRect(dx, obj.y, obj.w, obj.h);
+              ctx.strokeStyle = '#fff'; ctx.strokeRect(dx, obj.y, obj.w, obj.h);
             }
           }
         }
 
         // Jugador
         if (subMode !== 'editor') {
-          ctx.fillStyle = "#00f0ff";
-          ctx.fillRect(player.x - cameraX, player.y, player.size, player.size);
+          ctx.save();
+          ctx.translate(player.x - cameraX + player.size / 2, player.y + player.size / 2);
+          ctx.rotate(player.angle);
+
+          if (player.mode === 'cube') {
+            ctx.fillStyle = "#00f0ff"; ctx.fillRect(-player.size/2, -player.size/2, player.size, player.size);
+            ctx.strokeStyle = "#000"; ctx.lineWidth = 2; ctx.strokeRect(-player.size/2, -player.size/2, player.size, player.size);
+          } else if (player.mode === 'ship') {
+            ctx.fillStyle = "#ff0055";
+            ctx.beginPath(); ctx.moveTo(-15, 10); ctx.lineTo(15, 0); ctx.lineTo(-15, -10); ctx.closePath(); ctx.fill();
+          } else if (player.mode === 'ball') {
+            ctx.fillStyle = "#ffcc00"; ctx.beginPath(); ctx.arc(0, 0, player.size/2, 0, Math.PI*2); ctx.fill();
+            ctx.strokeStyle = "#000"; ctx.stroke();
+          } else if (player.mode === 'wave') {
+            ctx.fillStyle = "#00ffff";
+            ctx.beginPath(); ctx.moveTo(-12, 10); ctx.lineTo(12, 0); ctx.lineTo(-12, -10); ctx.closePath(); ctx.fill();
+          }
+          ctx.restore();
         }
 
-        ctx.restore();
         animFrameId = requestAnimationFrame(gameLoop);
       }
     }
   </script>
 </body>
-</html>  
+</html>
