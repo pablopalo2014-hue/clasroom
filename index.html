@@ -125,6 +125,7 @@
 </head>
 <body>
 
+  <!-- Vista Completa de Ayuda de Google Classroom -->
   <div id="classroom-view">
     <header>
       <div class="logo-container">
@@ -135,20 +136,32 @@
     <main class="main-container">
       <article class="classroom-article">
         <h2>Iniciar sesión en Classroom</h2>
-        <p>El tipo de entorno formativo determina la cuenta con la que se inicia sesión en Classroom, que puede ser una de las siguientes:</p>
+        <p>Para usar Classroom, debes iniciar sesión en tu cuenta de Google en tu ordenador o dispositivo móvil. Dependiendo de si tu centro educativo utiliza Google Workspace for Education o si utilizas una cuenta personal, el acceso puede variar ligeramente.</p>
+
+        <h3>Tipos de cuentas admitidas</h3>
         <ul>
-          <li>Cuenta de centro educativo</li>
-          <li>Cuenta personal de Google</li>
-          <li>Cuenta de Google Workspace</li>
+          <li><strong>Cuenta de centro educativo (Google Workspace for Education):</strong> Proporcionada por el centro escolar. Tiene un formato como <code>nombre@tucolegio.edu</code>.</li>
+          <li><strong>Cuenta personal de Google:</strong> Cuenta estándar utilizada fuera del ámbito escolar, con formato <code>nombre@gmail.com</code> (disponible solo en casos específicos permitidos por el administrador).</li>
+          <li><strong>Cuenta de Google Workspace:</strong> Cuentas administradas por organizaciones y centros formativos asociados.</li>
         </ul>
         
         <div class="note-box">
-          <p><strong>Nota:</strong> Los padres, madres y tutores no pueden acceder a la aplicación Classroom ni a las tareas de sus hijos debido a las leyes de privacidad.</p>
+          <p><strong>Nota importante sobre la privacidad:</strong> Los padres, madres y tutores legales no pueden iniciar sesión directamente con credenciales de alumno en la aplicación Classroom ni modificar tareas debido a las normativas vigentes de protección de datos y privacidad infantil.</p>
         </div>
 
-        <h2>Iniciar sesión</h2>
-        <p>Para iniciar sesión debes tener una conexión a Internet activa. Ve a classroom.google.com para comenzar.</p>
-        <p style="font-size:12px; color:#70757a; margin-top:24px;">Esta página incluye contenido de ayuda oficial traducido.</p>
+        <h2>Pasos para iniciar sesión por primera vez</h2>
+        <ol>
+          <li>Abre tu navegador web y dirígete a <a href="https://classroom.google.com" target="_blank" style="color: #1a73e8; text-decoration: none;">classroom.google.com</a>.</li>
+          <li>Haz clic en el botón de <strong>Ir a Classroom</strong>.</li>
+          <li>Introduce el correo electrónico completo de tu cuenta educativa y haz clic en <em>Siguiente</em>.</li>
+          <li>Introduce tu contraseña segura y pulsa en <em>Siguiente</em> para confirmar el acceso.</li>
+          <li>Si es la primera vez que inicias sesión, es posible que debas aceptar los términos de servicio y condiciones de privacidad establecidos por el administrador de tu institución.</li>
+        </ol>
+
+        <h3>Solución de problemas comunes</h3>
+        <p>Si experimentas errores al intentar acceder, comprueba que tu conexión a la red sea estable o ponte en contacto con el administrador de sistemas de tu centro educativo para restablecer las credenciales o verificar el estado de la suscripción de Google Workspace.</p>
+        
+        <p style="font-size:12px; color:#70757a; margin-top:32px; border-top: 1px solid #dadce0; padding-top: 12px;">Esta documentación incluye contenido oficial adaptado de los centros de ayuda globales de Google Classroom.</p>
       </article>
     </main>
   </div>
@@ -244,7 +257,7 @@
           <button class="draw-tool-btn" onclick="setDrawTool('brush', event)">🖌️ Pincel grueso</button>
           <button class="draw-tool-btn" onclick="setDrawTool('eraser', event)">🧹 Goma</button>
           <button class="draw-tool-btn" onclick="setDrawTool('line', event)">📏 Línea recta</button>
-          <button class="draw-tool-btn" onclick="setDrawTool('rect', event)"> rectángulo</button>
+          <button class="draw-tool-btn" onclick="setDrawTool('rect', event)">⏹️ Rectángulo</button>
           <label style="font-size:11px; margin-top:5px; color:#8b949e;">Color:</label>
           <input type="color" id="draw-color" value="#00f0ff" style="width:100%; height:28px; border:none; cursor:pointer; background:none;">
           <button class="btn-action btn-play" style="margin-top:auto;" onclick="loadDrawingTemplate()">Cargar Plantilla</button>
@@ -320,15 +333,6 @@
 
     let objects = [];
     let player = { x: 100, y: GROUND_Y - 30, size: 30, vy: 0, gravityDir: 1, mode: 'cube', isGrounded: false, angle: 0 };
-
-    const builtinDifficulties = [
-      { name: "1. Fácil", color: "#2ea44f", bg: "#091a10", endX: 2300 },
-      { name: "2. Normal", color: "#1f6feb", bg: "#091526", endX: 4600 },
-      { name: "3. Difícil", color: "#d97706", bg: "#241503", endX: 6900 },
-      { name: "4. Más Difícil", color: "#dc2626", bg: "#290a0a", endX: 9200 },
-      { name: "5. Insano", color: "#9333ea", bg: "#1a0829", endX: 11500 },
-      { name: "6. Demonio", color: "#ef4444", bg: "#1f0303", endX: 14000 }
-    ];
 
     // --- TECLA H ---
     window.addEventListener('keydown', (e) => {
@@ -469,7 +473,7 @@
 
     function saveToStorage() { localStorage.setItem('gd_levels_v4', JSON.stringify(customLevels)); }
 
-    // --- CUBESOFT & NIVELES SEMANALES (Fácil configuración desde código) ---
+    // --- CUBESOFT & NIVELES SEMANALES ---
     const CUBESOFT_LEVEL_NAMES = [
       "CubeSoft 01: First Steps", "CubeSoft 02: Block Highway", "CubeSoft 03: Neon Factory",
       "CubeSoft 04: Spike Valley", "CubeSoft 05: Gravity Station", "CubeSoft 06: Sky Fortress",
@@ -499,12 +503,11 @@
     }
 
     function getCubeSoftLevels() {
-      // Modifica fácilmente aquí o añade niveles desde el repositorio de GitHub cambiando este array o lógica
       let levels = [];
       const currentWeek = Math.floor(Date.now() / (7*24*60*60*1000));
       let startWeek = Number(localStorage.getItem('cubesoft_start_week') || currentWeek);
       const passedWeeks = Math.max(0, currentWeek - startWeek);
-      const totalAvailable = Math.min(30, 10 + passedWeeks); // 10 iniciales + 1 por semana
+      const totalAvailable = Math.min(30, 10 + passedWeeks);
 
       for(let i=0; i<totalAvailable; i++) {
         levels.push(makeCubeSoftLevel(i));
@@ -897,4 +900,4 @@
     }
   </script>
 </body>
-</html>
+</html>  
